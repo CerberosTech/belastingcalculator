@@ -1,6 +1,6 @@
 ---
 title: "Dutch tax credits 2026: general and labour tax credit"
-description: How much are the general tax credit (max €3,115) and the labour tax credit (max €5,685) in the Netherlands in 2026? With phase-out thresholds and worked examples.
+description: "The Dutch general tax credit (max €3,115) and labour tax credit (max €5,685) in 2026, explained with phase-out thresholds and worked examples."
 slug: tax-credits-2026
 translationOf: heffingskortingen-2026
 updated: 2026-10-17
