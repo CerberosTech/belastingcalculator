@@ -81,7 +81,7 @@ const abs = rel => `${SITE}/${rel}`;
 const altOf = key => ({ nl: ROUTES[key].nl, en: ROUTES[key].en }); // rels of one page in both languages
 const L = Object.fromEntries(LANGS.map(lang => [lang, { ...Object.fromEntries(Object.keys(ROUTES).map(k => [k, url(k, lang)])), proef: OFFICIAL.proef }]));
 const K = Object.fromEntries(LANGS.map(lang => [lang, createCalcs(E, P, S, L[lang], lang)]));
-const { esc } = K.nl;
+const { esc, fold } = K.nl;
 
 // ---------- text helpers ----------
 const slug = s => String(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'x';
@@ -270,6 +270,34 @@ const THEME = '#14213D';
 const hash = f => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex').slice(0, 8);
 const LOGO = `<svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="14" fill="#14213D"/><rect x="14" y="15" width="24" height="5" rx="1" fill="#fff"/><rect x="14" y="25" width="30" height="5" rx="1" fill="#fff"/><rect x="12" y="34" width="40" height="10" rx="2" fill="#FFE45C"/><rect x="14" y="48" width="36" height="3" fill="#fff"/><rect x="14" y="53" width="36" height="3" fill="#fff"/></svg>`;
 let ASSET = {}; // filled after the bundle is written
+// Line icons (24 px grid, currentColor). Decorative: always aria-hidden.
+const ICON = {
+  netto: '<path d="M3 7a2 2 0 0 1 2-2h12v4"/><path d="M3 7v10a2 2 0 0 0 2 2h14V9H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14" r="1.2"/>',
+  ib: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  zzp: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+  box3: '<path d="M4 20h16"/><rect x="6" y="11" width="3" height="6"/><rect x="11" y="7" width="3" height="10"/><rect x="16" y="4" width="3" height="13"/>',
+  vakantiegeld: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  expat: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  zorgtoeslag: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/>',
+  print: '<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+  shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+  chevron: '<path d="m6 9 6 6 6-6"/>',
+};
+const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[name]}</svg>`;
+// Before the first paint: the theme the visitor chose (localStorage, no cookie). Without a choice the CSS follows the system.
+const THEME_JS = `<script>try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>`;
+// Folds (<details data-fold>, see fold() in site/calcs.mjs) are open in the HTML. On a small screen this script closes
+// each one as the parser adds it: mutation records are handled before the browser paints, so nothing moves on load.
+// The same media query is in style.css and site/client.js.
+const FOLD_JS = `<script>(function(){var d=document;if(!window.MutationObserver||!matchMedia('(max-width: 47.5em)').matches)return;var o=new MutationObserver(function(m){for(var i=0;i<m.length;i++)for(var j=0,a=m[i].addedNodes;j<a.length;j++)if(a[j].nodeName==='DETAILS'&&a[j].hasAttribute('data-fold'))a[j].removeAttribute('open')});o.observe(d.documentElement,{childList:true,subtree:true});d.addEventListener('DOMContentLoaded',function(){o.disconnect()})})()</script>`;
 
 // hreflang: one link per language that has this page, plus x-default (the Dutch page, or the only page).
 const hreflang = alt => [...LANGS.filter(l => alt[l] != null).map(l => [l, alt[l]]), ['x-default', alt.nl ?? alt.en]];
@@ -289,7 +317,7 @@ function page({ lang, rel, alt = { [lang]: rel }, switchTo, title, desc, body, t
   return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${abs(rel)}">${robots ? `<meta name="robots" content="${robots}">` : ''}
 ${alternates}
-<meta name="theme-color" content="${THEME}"><meta name="color-scheme" content="light">
+<meta name="theme-color" content="${THEME}" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0A0D17" media="(prefers-color-scheme: dark)"><meta name="color-scheme" content="light dark">${THEME_JS}${FOLD_JS}
 <meta name="google-site-verification" content="7bn98qAl45WV4Q5VrQ-9FIYiC_JNoW4Zxqb2prfntAc" />
 <meta name="msvalidate.01" content="B9A9D4CCD8BC0851FDAA9F094498CF68" />
 <link rel="icon" href="${BASE}/favicon.ico" sizes="32x32"><link rel="icon" href="${BASE}/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="${BASE}/apple-touch-icon.png">
@@ -300,24 +328,26 @@ ${alternates}
 <link rel="stylesheet" href="${BASE}/style.css?v=${ASSET.css}"><script defer src="${BASE}/app.js?v=${ASSET.js}"></script></head><body>
 <a class="skip" href="#main">${esc(ui.skip)}</a>
 <header class="site-head"><div class="wrap"><a class="brand" href="${home}">${LOGO}<span>${BRAND}</span></a>
-${langSwitch(lang, alt, switchTo)}
-<nav class="site-nav" id="site-nav" aria-label="${esc(ui.mainNav)}"><ul>${ui.nav.map(([k, label, hash = '']) => `<li><a href="${url(k, lang)}${hash}"${k === nav ? ' aria-current="page"' : ''}>${esc(label)}</a></li>`).join('')}</ul></nav></div></header>
+<nav class="site-nav" id="site-nav" aria-label="${esc(ui.mainNav)}"><ul>${ui.nav.map(([k, label, hash = '']) => `<li><a href="${url(k, lang)}${hash}"${k === nav ? ' aria-current="page"' : ''}>${esc(label)}</a></li>`).join('')}</ul></nav>
+<div class="head-tools">${langSwitch(lang, alt, switchTo)}<button type="button" class="theme" data-theme-toggle aria-pressed="false" hidden>${icon('moon', 'ic i-moon')}${icon('sun', 'ic i-sun')}<span class="vh">${esc(ui.theme)}</span></button></div></div></header>
 <main id="main" tabindex="-1">${body}</main>
 ${footer(lang)}${ANALYTICS}</body></html>`;
 }
 const footer = lang => { const f = COPY[lang].ui.footer;
   return `<footer class="site-foot"><div class="wrap">
+<div class="foot-brand"><a class="brand" href="${url('home', lang)}">${LOGO}<span>${BRAND}</span></a><p>${esc(COPY[lang].home.h1)}. ${COPY[lang].ui.perks.join(' · ')}.</p></div>
 <div class="foot-cols">
-<div><h2>${f.calcs}</h2><ul>${calcsOf(lang).map(c => `<li><a href="${url(c.key, lang)}">${esc(c.h1.replace(/ 2026$/, ''))}</a></li>`).join('')}</ul></div>
-<div><h2>${f.guides}</h2><ul>${guides[lang].slice(0, 8).map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a></li>`).join('')}<li><a href="${url('gidsen', lang)}">${f.allGuides}</a></li></ul></div>
-<div><h2>${f.site}</h2><ul><li><a href="${url('methode', lang)}">${f.method}</a></li><li><a href="${url('over', lang)}">${f.about}</a></li><li><a href="${url('privacy', lang)}">${f.privacy}</a></li><li><a href="${url('affiliate', lang)}">${f.affiliate}</a></li></ul></div>
+<div>${fold(`<h2>${f.calcs}</h2>`, `<ul>${calcsOf(lang).map(c => `<li><a href="${url(c.key, lang)}">${esc(c.h1.replace(/ 2026$/, ''))}</a></li>`).join('')}</ul>`, 'foot-fold')}</div>
+<div>${fold(`<h2>${f.guides}</h2>`, `<ul>${guides[lang].slice(0, 8).map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a></li>`).join('')}<li><a href="${url('gidsen', lang)}">${f.allGuides}</a></li></ul>`, 'foot-fold')}</div>
+<div>${fold(`<h2>${f.site}</h2>`, `<ul><li><a href="${url('methode', lang)}">${f.method}</a></li><li><a href="${url('over', lang)}">${f.about}</a></li><li><a href="${url('privacy', lang)}">${f.privacy}</a></li><li><a href="${url('affiliate', lang)}">${f.affiliate}</a></li></ul>`, 'foot-fold')}</div>
 </div>
 <p class="foot-note">${f.note}</p>
 </div></footer>`; };
 const crumbs = (lang, items) => `<nav class="crumbs wrap" aria-label="${esc(COPY[lang].ui.crumbs)}"><ol><li><a href="${url('home', lang)}">${BRAND}</a></li>${items.map(([label, h], i) => i === items.length - 1 ? `<li><span aria-current="page">${esc(label)}</span></li>` : `<li><a href="${h}">${esc(label)}</a></li>`).join('')}</ol></nav>`;
 const breadcrumbLd = (lang, items) => ({ '@type': 'BreadcrumbList', itemListElement: [[BRAND, abs(ROUTES.home[lang])], ...items].map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })) });
 const PUBLISHER = { '@type': 'Organization', '@id': `${SITE}/#org`, name: BRAND, url: `${SITE}/`, logo: { '@type': 'ImageObject', url: `${SITE}/logo-512.png`, width: 512, height: 512 } };
-const disclaimer = lang => `<aside class="disclaimer" aria-label="${esc(COPY[lang].ui.disclaimerLabel)}">${COPY[lang].ui.disclaimer}</aside>`;
+const perks = lang => `<ul class="perks">${COPY[lang].ui.perks.map(p => `<li>${icon('check')}${esc(p)}</li>`).join('')}</ul>`;
+const disclaimer = lang => `<aside class="disclaimer" aria-label="${esc(COPY[lang].ui.disclaimerLabel)}">${icon('info', 'ic d-ic')}<div>${COPY[lang].ui.disclaimer}</div></aside>`;
 
 // GoatCounter click event for an outgoing link: kind 'aff' (affiliate) or 'newsletter'. The name comes from the config.
 const track = (kind, name) => ` data-goatcounter-click="${kind}-${slug(name)}" data-goatcounter-title="${esc(`${kind === 'aff' ? 'Affiliate' : 'Newsletter'}: ${name}`)}"`;
@@ -330,28 +360,39 @@ function affiliateBlock(lang, id = 'aff') {
 <h3>${A.bank}</h3><ul class="aff-list">${AFFILIATE.bank.map(item).join('')}</ul></aside>`;
 }
 
-// One calculator: form + result (default example rendered here, JS takes over in the browser).
-function calcWidget(lang, calcId, { main = true, prefix = calcId, titleTag = 'h2' } = {}) {
+// One calculator: form + result (default example rendered here, JS takes over in the browser), then the compare section.
+function calcWidget(lang, calcId, { prefix = calcId } = {}) {
   const k = K[lang], ui = COPY[lang].ui, calc = k.C[calcId], v = k.defaults(calc), r = k.render(calc, v), out = `r-${prefix}`;
-  return `<div class="calc">
-<form class="calc-form" data-calc="${calcId}"${main ? ' data-main' : ''} data-out="${out}" novalidate aria-labelledby="${prefix}-fh">
-<${titleTag} class="vh" id="${prefix}-fh">${ui.yourData}</${titleTag}>
+  const btn = (attr, ic, label, cls = 'btn ghost') => `<button type="button" class="${cls}" ${attr} hidden>${icon(ic)}<span class="btn-t">${label}</span></button>`;
+  return `<div class="calc-root" data-calc-root>
+<div class="calc">
+<form class="calc-form" id="${prefix}-form" data-calc="${calcId}" data-main data-out="${out}" novalidate aria-labelledby="${prefix}-fh">
+<h2 class="form-title" id="${prefix}-fh">${ui.yourData}</h2>
 ${k.renderFields(calc, v, prefix)}
 <noscript><p class="help">${ui.noscript}</p></noscript>
 </form>
 <section class="result" id="${out}" aria-labelledby="${out}-h">
-<${titleTag} class="r-title" id="${out}-h">${ui.result}<span class="vh">: ${esc(calc.title)}</span></${titleTag}>
+<div class="r-top"><h2 class="r-title" id="${out}-h">${ui.result}<span class="vh">: ${esc(calc.title)}</span></h2><span class="live-dot">${ui.calcBadge} · 2026</span></div>
+<div class="print-only r-inputs" data-inputs>${r.inputs}</div>
 <div class="r-head" data-head aria-live="polite" aria-atomic="true">${r.head}</div>
-<div data-body>${r.body}</div>
-${main ? `<div class="r-foot"><button type="button" class="btn" data-copy hidden>${ui.copyLink}</button><p class="vh" data-copy-status aria-live="polite"></p>
-<p class="r-src">${ui.sources}: ${calc.sources.map(id => srcLink(id, lang)).join(', ')}. ${ui.seeAlso} <a href="${url('methode', lang)}">${ui.methodLower}</a>.</p></div>` : ''}
+<p class="print-only print-url" data-print-url></p>
+<div class="r-viz" data-viz>${r.viz}</div>
+<div class="r-actions">${btn('data-copy', 'link', ui.copyLink, 'btn')}${btn('data-copy-text', 'copy', ui.copyResult)}${btn('data-print', 'print', ui.print)}<p class="vh" data-copy-status aria-live="polite"></p></div>
+<div class="r-chart" data-chart>${r.chart}</div>
+${fold(`<h3 class="r-h">${k.RESULT_FOLDS.body}</h3>`, `<div class="r-body" data-body>${r.body}</div>`, 'r-fold')}
+${r.table ? `${fold(`<h3 class="r-h">${k.RESULT_FOLDS.table}</h3>`, `<div data-table>${r.table}</div>`, 'r-fold')}<div data-after>${r.after}</div>` : ''}
+<p class="r-src">${ui.sources}: ${calc.sources.map(id => srcLink(id, lang)).join(', ')}. ${ui.seeAlso} <a href="${url('methode', lang)}">${ui.methodLower}</a>.</p>
 </section>
+</div>
+${k.renderCompare(calc, v, prefix, r)}
 </div>`;
 }
 
-const faqHtml = (lang, list) => `<section class="faq" aria-labelledby="faq-h"><h2 id="faq-h">${COPY[lang].ui.faq}</h2>${list.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</section>`;
+// A section from the copy files (<section …><h2 …>…</h2>…</section>) as a fold: the heading becomes the summary.
+const foldSection = html => { const m = html.trim().match(/^(<section\b[^>]*>)(<h2\b[^>]*>[\s\S]*?<\/h2>)([\s\S]*)(<\/section>)$/); if (!m) throw new Error('foldSection: expected <section><h2>…</h2>…</section>'); return `${m[1]}${fold(m[2], m[3], 'fold-card')}${m[4]}`; };
+const faqHtml = (lang, list) => `<section class="faq" aria-labelledby="faq-h">${fold(`<h2 id="faq-h">${COPY[lang].ui.faq}</h2>`, list.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join(''), 'fold-card')}</section>`;
 const faqLd = list => ({ '@type': 'FAQPage', mainEntity: list.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
-const calcList = (lang, list, cls = 'calc-index compact') => `<ul class="${cls}">${list.map(c => `<li><a href="${url(c.key, lang)}"><strong>${esc(c.h1)}</strong><span>${esc(c.short)}</span></a></li>`).join('')}</ul>`;
+const calcList = (lang, list, cls = 'calc-index compact') => `<ul class="${cls}">${list.map(c => `<li><a href="${url(c.key, lang)}"><span class="ci-ic">${icon(c.key)}</span><strong>${esc(c.h1)}</strong><span class="ci-s">${esc(c.short)}</span>${icon('arrow', 'ic ci-go')}</a></li>`).join('')}</ul>`;
 const otherCalcs = (lang, except) => `<section class="others" aria-labelledby="oc-h"><h2 id="oc-h">${COPY[lang].ui.otherCalcs}</h2>${calcList(lang, calcsOf(lang).filter(c => c.key !== except))}</section>`;
 
 function calcPage(lang, c, extra = '') {
@@ -359,14 +400,14 @@ function calcPage(lang, c, extra = '') {
   const ld = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'WebApplication', name: c.h1, url: abs(rel), description: c.desc, applicationCategory: 'FinanceApplication', operatingSystem: 'Any', inLanguage: LOCALE[lang].ld, isAccessibleForFree: true, dateModified: UPDATED, offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }, publisher: { '@id': `${SITE}/#org` } },
     faqLd(faq), breadcrumbLd(lang, [[c.h1, abs(rel)]]), PUBLISHER] };
-  const body = `${crumbs(lang, [[c.h1, url(c.key, lang)]])}
-<div class="intro wrap"><h1>${esc(c.h1)}</h1><p class="lead">${esc(c.lead)}</p>${updatedLine(lang)}</div>
+  const body = `<div class="hero hero-calc-page"><div class="hero-bg" aria-hidden="true"></div>${crumbs(lang, [[c.h1, url(c.key, lang)]])}
+<div class="intro wrap"><span class="eyebrow">${icon(c.key)}${esc(c.name)}</span><h1>${esc(c.h1)}</h1><p class="lead">${esc(c.lead)}</p>${updatedLine(lang)}${perks(lang)}</div></div>
 <div class="calc-band"><div class="wrap">${calcWidget(lang, c.calc)}</div></div>
 <div class="wrap content">
 ${disclaimer(lang)}
 ${extra}
-<section class="how" aria-labelledby="how-h"><h2 id="how-h">${ui.how}</h2>${COPY[lang].how[c.key]}
-<ul class="links">${rg.map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a></li>`).join('')}<li><a href="${url('methode', lang)}">${ui.howMethod}</a></li></ul></section>
+<section class="how" aria-labelledby="how-h">${fold(`<h2 id="how-h">${ui.how}</h2>`, `${COPY[lang].how[c.key]}
+<ul class="links">${rg.map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a></li>`).join('')}<li><a href="${url('methode', lang)}">${ui.howMethod}</a></li></ul>`, 'fold-card')}</section>
 ${faqHtml(lang, faq)}
 ${otherCalcs(lang, c.key)}
 </div>`;
@@ -398,22 +439,20 @@ for (const lang of LANGS) {
   {
     const H = C.home;
     const exampleOf = c => { const calc = k.C[c.calc], r = calc.compute(k.defaults(calc)); return `${r.head.label}: ${r.head.value}`; };
-    const body = `<div class="hero"><div class="wrap hero-grid">
-<div class="hero-text"><h1>${esc(H.h1)}</h1>
+    const body = `<div class="hero hero-home"><div class="hero-bg" aria-hidden="true"></div><div class="wrap intro">
+<span class="eyebrow">${icon('netto')}${esc(H.quick)}</span><h1>${esc(H.h1)}</h1>
 <p class="lead">${H.lead}</p>
 ${updatedLine(lang)}
-<ul class="facts">${H.facts.map(f => `<li>${f}</li>`).join('')}</ul></div>
-<div class="hero-calc"><h2 class="hero-calc-h">${H.quick}</h2>${calcWidget(lang, 'snel', { main: false, prefix: 'snel', titleTag: 'h3' })}</div>
-</div></div>
-<div class="wrap content">
-<section aria-labelledby="calculators"><h2 id="calculators">${H.allCalcs}</h2>
-<ul class="calc-index">${calcsOf(lang).map(c => `<li><a href="${url(c.key, lang)}"><strong>${esc(c.h1)}</strong><span>${esc(c.short)}</span><span class="ex">${ui.example}: ${exampleOf(c)}</span></a></li>`).join('')}</ul></section>
-<section aria-labelledby="gidsen-h"><h2 id="gidsen-h">${H.guides}</h2>
-${guides[lang].length ? `<ul class="guides">${guides[lang].map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a><p>${esc(g.description)}</p></li>`).join('')}</ul>` : `<p>${H.noGuides}</p>`}
-<p class="more"><a href="${url('gidsen', lang)}">${ui.footer.allGuides}</a></p></section>
-<section class="trust" aria-labelledby="trust-h"><h2 id="trust-h">${H.trustH}</h2>
+<ul class="perks">${H.facts.map(f => `<li>${icon('check')}${f}</li>`).join('')}</ul></div></div>
+<div class="calc-band"><div class="wrap">${calcWidget(lang, 'netto')}</div></div>
+<div class="wrap content wide">
+<section class="sec" aria-labelledby="calculators"><div class="sec-top"><h2 id="calculators">${H.allCalcs}</h2></div>
+<ul class="calc-index">${calcsOf(lang).map(c => `<li><a href="${url(c.key, lang)}"><span class="ci-ic">${icon(c.key)}</span><strong>${esc(c.h1)}</strong><span class="ci-s">${esc(c.short)}</span><span class="ex">${ui.example}: ${exampleOf(c)}</span>${icon('arrow', 'ic ci-go')}</a></li>`).join('')}</ul></section>
+<section class="sec" aria-labelledby="gidsen-h"><div class="sec-top"><h2 id="gidsen-h">${H.guides}</h2><p class="more"><a href="${url('gidsen', lang)}">${ui.footer.allGuides}</a></p></div>
+${guides[lang].length ? `<details class="fold fold-show" data-fold open><summary><span class="fold-l">${esc(ui.showGuides(guides[lang].length))}</span>${icon('chevron', 'ic fold-c')}</summary><ul class="guides cards">${guides[lang].map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a><p>${esc(g.description)}</p></li>`).join('')}</ul></details>` : `<p>${H.noGuides}</p>`}</section>
+<section class="sec trust" aria-labelledby="trust-h">${icon('shield', 'ic trust-ic')}<div>${fold(`<h2 id="trust-h">${H.trustH}</h2>`, `
 ${H.trust}
-<p><a href="${url('methode', lang)}">${H.trustLink}</a></p></section>
+<p><a href="${url('methode', lang)}">${H.trustLink}</a></p>`)}</div></section>
 ${disclaimer(lang)}
 </div>`;
     const ld = { '@context': 'https://schema.org', '@graph': [PUBLISHER, { '@type': 'WebSite', '@id': `${abs(ROUTES.home[lang])}#website`, name: BRAND, url: abs(ROUTES.home[lang]), inLanguage: LOCALE[lang].ld, publisher: { '@id': `${SITE}/#org` } }] };
@@ -421,17 +460,17 @@ ${disclaimer(lang)}
   }
 
   // Calculators
-  for (const c of calcsOf(lang)) emit(ROUTES[c.key][lang], calcPage(lang, c, c.key === 'zzp' ? affiliateBlock(lang) : c.key === 'zorgtoeslag' ? C.toeslagInfo() : ''), { alt: altOf(c.key) });
+  for (const c of calcsOf(lang)) emit(ROUTES[c.key][lang], calcPage(lang, c, c.key === 'zzp' ? affiliateBlock(lang) : c.key === 'zorgtoeslag' ? foldSection(C.toeslagInfo()) : ''), { alt: altOf(c.key) });
 
   // Guide list. Guides that exist only in the other language are listed too, marked with their language.
   {
     const G = C.guidesIndex, rel = ROUTES.gidsen[lang], foreign = guides[other(lang)].filter(g => !g.alt[lang]);
     const item = (g, mark = false) => `<li${mark ? ` lang="${g.lang}"` : ''}><a href="${guideUrl(g)}"${mark ? ` hreflang="${g.lang}"` : ''}>${esc(g.title)}</a><p>${esc(g.description)}</p>${g.updated ? `<p class="updated">${COPY[g.lang].ui.updated}: <time datetime="${g.updated}">${esc(longDate(g.updated, g.lang))}</time></p>` : ''}</li>`;
     const body = `${crumbs(lang, [[G.crumb, url('gidsen', lang)]])}
-<div class="wrap content prose"><h1>${esc(G.h1)}</h1>
-<p class="lead">${G.lead}</p>${updatedLine(lang, newest(guides[lang]))}
-${guides[lang].length ? `<ul class="guides">${guides[lang].map(g => item(g)).join('')}</ul>` : `<p>${G.empty}</p>`}
-${foreign.length ? `<section aria-labelledby="foreign-h"><h2 id="foreign-h">${G.foreignH}</h2><p>${G.foreignLead}</p><ul class="guides">${foreign.map(g => item(g, true)).join('')}</ul></section>` : ''}
+<div class="wrap content"><div class="page-head"><h1>${esc(G.h1)}</h1>
+<p class="lead">${G.lead}</p>${updatedLine(lang, newest(guides[lang]))}</div>
+${guides[lang].length ? `<ul class="guides cards">${guides[lang].map(g => item(g)).join('')}</ul>` : `<p>${G.empty}</p>`}
+${foreign.length ? `<section class="sec" aria-labelledby="foreign-h"><h2 id="foreign-h">${G.foreignH}</h2><p>${G.foreignLead}</p><ul class="guides cards">${foreign.map(g => item(g, true)).join('')}</ul></section>` : ''}
 </div>`;
     emit(rel, page({ lang, rel, alt: altOf('gidsen'), title: G.title, desc: G.desc, body, nav: 'gidsen', ld: { '@context': 'https://schema.org', ...breadcrumbLd(lang, [[G.crumb, abs(rel)]]) } }), { lastmod: newest(guides[lang]), alt: altOf('gidsen') });
   }
