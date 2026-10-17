@@ -20,14 +20,15 @@ node scripts/check.mjs # serves dist/ and checks every page (both languages) in 
 | `data/sources.json` | Source id → official URL. |
 | `engine/tax.mjs` | The tax engine (pure functions, no dependencies). |
 | `site/calcs.mjs` | The calculators: fields, defaults, result ledger, in both languages (`T(nl, en)` pairs). Used by the build (HTML) **and** the browser (bundled). |
-| `site/client.js` | Browser code: reads the form, updates the result, keeps the URL query in sync, "Kopieer link", result bar, query string on the language switcher. |
+| `site/client.js` | Browser code: reads the form, updates the result on every input (sliders too), keeps the URL query in sync, counts the main figure up, animates the bars, converts the amount when you switch month/year/hour, scenario A/B (`vs=` in the query), copy link, copy result as text, print, dark-mode toggle, folds (closed on small screens, fixed open on wide screens, opened by an #anchor and for print), the mobile result bar, query string on the language switcher. |
 | `site/copy-nl.mjs`, `site/copy-en.mjs` | All page copy per language: UI strings, calculator titles, FAQ, "how it works", source names, home, method page, privacy, about, 404. Same shape; the build stops if a key is missing in one. |
 | `build.mjs` | Builds every page into `dist/`. Contains `ROUTES` (nl + en slug per page), `AFFILIATE`, layout, hreflang, markdown, sitemap. |
-| `src/` | Static files copied as-is: `style.css`, `icon.svg`, `favicon.ico`, `apple-touch-icon.png`, `logo-512.png`, `og-image.png`. |
+| `src/` | Static files copied as-is: `style.css` (the whole design system: light and dark colour variables, components, print), `icon.svg`, `favicon.ico`, `apple-touch-icon.png`, `logo-512.png`, `og-image.png`. |
 | `content/gidsen/*.md` | Dutch guides. Every `.md` file here becomes a page. |
 | `content/guides-en/*.md` | English guides (under `/en/guides/`). Paired with a Dutch guide by `translationOf` or the same slug. |
+| `scripts/shots.mjs` | Self-review screenshots at 1366 px and 390 px: `node scripts/shots.mjs OUTDIR [page …] [--dark]`. |
 | `scripts/make-icons.mjs` | Renders the PNG/ICO files in `src/` from `src/icon.svg` with headless Chrome. Run by hand; output is committed. |
-| `scripts/check.mjs` | Local check, both languages: console errors, overflow at 360 px, tap targets, internal links and #anchors, hreflang (reciprocal, x-default, sitemap), counterparts, switcher, no Dutch UI text on `/en/`, calculator behaviour, shared links, GoatCounter (tag on every page, click names on sponsored and newsletter links, no query string sent). |
+| `scripts/check.mjs` | Local check, both languages: console errors, overflow at 360 px, tap targets, internal links and #anchors, hreflang (reciprocal, x-default, sitemap), counterparts, switcher, no Dutch UI text on `/en/`, calculator behaviour (typing, slider, month → year, scenario A/B from a shared link, copy/print/theme buttons, home calculator), shared links, folds (open in the HTML, closed at 360 px, open at 1280 px, FAQ JSON-LD in the HTML), no layout shift on load, the mobile result bar, the mobile home page height at 390 px (budget 6500 px), GoatCounter (tag on every page, click names on sponsored and newsletter links, no query string sent). |
 | `scripts/indexnow.mjs` | Pings IndexNow after a deploy (CI). |
 | `.github/workflows/pages.yml` | CI: test, build, deploy to GitHub Pages, IndexNow. |
 | `_ref/` | Reference material (SEO plan, monetisation notes, older build). Not used by the build. |
@@ -37,6 +38,29 @@ node scripts/check.mjs # serves dist/ and checks every page (both languages) in 
 - Every calculator page is plain HTML with a real example result (the defaults), so it works without JavaScript and search engines see the numbers.
 - `dist/app.js` is one script: `engine/tax.mjs` + `site/calcs.mjs` + the params + `site/client.js`. It re-renders the same result HTML when you type.
 - Inputs are stored in the query string (`?bruto=4000&periode=maand`). A shared link restores the inputs.
+
+## Mobile: folds and the result bar
+
+- **Folds.** Long parts are `<details class="fold" data-fold open>` with the heading in the `<summary>` (`fold()` in `site/calcs.mjs`). On calculator pages: the calculation, the per-period table, the compare section, "how it works", the FAQ and (zorgtoeslag) the other allowances. On the home page: the calculation, the per-period table, the compare section, the guide list and "how we calculate". On every page: the footer columns.
+- **Open or closed.** The HTML has `open`, so the content works without JavaScript and search engines see all of it. On a screen of 47.5em (760 px) or less, `FOLD_JS` in `<head>` (build.mjs) closes each fold as the parser adds it, before the first paint, so nothing moves. Wider screens keep them open, and `client.js` blocks the toggle there, so the desktop looks as before. Use the same media query in `style.css`, `FOLD_JS` and `client.js`.
+- **New long section?** Wrap it with `fold('<h2 id="…">Title</h2>', body, 'fold-card')`, or `foldSection(html)` for a `<section><h2>` from the copy files.
+- **Result bar** (`.peek`, below 60em): after the first input or focus in the form, while the form is on screen and the result card is not, a bar at the bottom shows the main figure, live. A tap scrolls to the result and moves the focus to it; the URL does not change. It sits above the safe area and above an on-screen keyboard.
+
+## What a calculator shows
+
+`compute(v)` in `site/calcs.mjs` returns the parts of the result. Only `head` and `rows` are required.
+
+| Key | What it is |
+|---|---|
+| `head` | The main figure (`label`, `value`, `sub` lines). The browser counts it up when it changes. |
+| `rows` | The calculation ledger (`row()` and `head()`). Scenario A/B and "copy result" use these rows. |
+| `viz` | `bars` (stacked bars: `{ id, cap, total, parts: [{ k, l, v }] }`) and `stats` (rate tiles: `{ l, v, n }`). `k` picks the colour: `net`, `tax`, `pension`, `credit`, `zvw`, `free`, `alt`. |
+| `chart` | A line chart with a "you are here" marker: `{ xMax, yMax, series: [{ k, l, pts, dash }], diag, gap, marker, title, xl, aria }`. |
+| `table` | The per-period table. It gets its own fold ("Per periode" / "Per period"); `after` then comes under that fold. |
+| `after` | Notes under the calculation (inside the calculation fold when there is no `table`). |
+| `vs`, `whatif` | The compare section: side-by-side cards (needs `vs: 'title'` on the calculator) and "what if" (needs a field with `place: 'compare'`). |
+
+A money, percentage or number field with `range: [min, max, step]` (or a function of the values) gets a slider. `perPeriod: true` converts the amount when the visitor switches month, year or hour.
 
 ## Common changes
 
