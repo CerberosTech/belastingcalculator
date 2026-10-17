@@ -1,7 +1,33 @@
-// Browser enhancement. Bundled by build.mjs after engine/tax.mjs and site/calcs.mjs, with P, S and L defined.
+// Browser enhancement. Bundled by build.mjs after engine/tax.mjs and site/calcs.mjs, with P, S and L (links per language) defined.
 // Without JavaScript the page still shows the example result that the build wrote into the HTML.
-const K = createCalcs(createEngine(P), P, S, L);
+
+// GoatCounter: count.js (async, end of body) runs with no_onload, so we count here. On a calculator the query string holds
+// the amounts the visitor typed. count.js sends it as "q", in the path (when the canonical is on another host) and in the
+// referrer (a calculator on this site). We drop all three, so no amounts go to GoatCounter.
+// Clicks: links with data-goatcounter-click (affiliate, newsletter).
+function goat() {
+  const gc = window.goatcounter;
+  if (!gc || !gc.count || gc.started) return;
+  gc.started = true;
+  const data = gc.get_data;
+  const noQuery = x => typeof x === 'string' ? x.split(/[?#]/)[0] : x;
+  gc.get_data = vars => { const d = data(vars); delete d.q; d.p = noQuery(d.p); d.r = noQuery(d.r); return d; };
+  const start = () => { gc.count(); gc.bind_events(); };
+  if (document.visibilityState !== 'hidden') start();
+  else document.addEventListener('visibilitychange', function f() { if (document.visibilityState === 'hidden') return; document.removeEventListener('visibilitychange', f); start(); });
+}
+if (window.goatcounter && window.goatcounter.count) goat();
+else { const s = document.querySelector('script[data-goatcounter]'); if (s) s.addEventListener('load', goat); }
+const LANG = document.documentElement.lang === 'en' ? 'en' : 'nl';
+const K = createCalcs(createEngine(P), P, S, L[LANG], LANG);
 document.documentElement.classList.add('js');
+
+// Language switcher: keep the query string, so a shared result opens with the same inputs in the other language.
+// Pages without a translation link to the guide list instead; there the query has no meaning.
+const langLink = document.querySelector('a[data-lang-switch]:not([data-no-translation])');
+const langBase = langLink && langLink.getAttribute('href').split('?')[0];
+const syncLang = () => { if (langLink) langLink.setAttribute('href', langBase + location.search); };
+syncLang();
 
 for (const form of document.querySelectorAll('form[data-calc]')) {
   const calc = K.C[form.dataset.calc], fields = K.fieldsOf(calc), main = form.hasAttribute('data-main');
@@ -46,7 +72,7 @@ for (const form of document.querySelectorAll('form[data-calc]')) {
     const r = K.render(calc, v);
     if (r.head !== lastHead) { headEl.innerHTML = r.head; lastHead = r.head; }
     if (r.body !== lastBody) { bodyEl.innerHTML = r.body; lastBody = r.body; }
-    if (main) history.replaceState(null, '', `${location.pathname}?${K.toQuery(calc, v)}${location.hash}`);
+    if (main) { history.replaceState(null, '', `${location.pathname}?${K.toQuery(calc, v)}${location.hash}`); syncLang(); }
   }
   let t;
   form.addEventListener('input', e => { clearTimeout(t); t = setTimeout(update, e.target.type === 'text' ? 200 : 0); });
@@ -75,7 +101,7 @@ for (const form of document.querySelectorAll('form[data-calc]')) {
     form.addEventListener('change', sync);
   }
 
-  // "Kopieer link": copies the current URL with all inputs.
+  // "Kopieer link" / "Copy link": copies the current URL with all inputs.
   const copy = out.querySelector('[data-copy]');
   if (copy) {
     const status = out.querySelector('[data-copy-status]'), label = copy.textContent;
@@ -85,8 +111,8 @@ for (const form of document.querySelectorAll('form[data-calc]')) {
       let ok = false;
       try { await navigator.clipboard.writeText(location.href); ok = true; } catch { /* no clipboard access */ }
       if (!ok) { const ta = document.createElement('textarea'); ta.value = location.href; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.append(ta); ta.select(); try { ok = document.execCommand('copy'); } catch { ok = false; } ta.remove(); }
-      copy.textContent = ok ? 'Link gekopieerd' : label;
-      status.textContent = ok ? 'De link naar deze berekening staat op je klembord.' : `Kopiëren lukt niet. Kopieer het adres uit de adresbalk.`;
+      copy.textContent = ok ? K.T('Link gekopieerd', 'Link copied') : label;
+      status.textContent = ok ? K.T('De link naar deze berekening staat op je klembord.', 'The link to this calculation is on your clipboard.') : K.T('Kopiëren lukt niet. Kopieer het adres uit de adresbalk.', 'Copying did not work. Copy the address from the address bar.');
       setTimeout(() => { copy.textContent = label; }, 2500);
     });
   }

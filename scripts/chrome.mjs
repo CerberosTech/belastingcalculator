@@ -64,6 +64,15 @@ export async function launch() {
         await tab.eval('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
       },
       async setContent(html) { const { frameTree } = await s('Page.getFrameTree'); await s('Page.setDocumentContent', { frameId: frameTree.frame.id, html }); await tab.eval('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))'); },
+      // Answer requests that match the URL patterns (Fetch domain, * wildcards) with respond(request) → { status, type, body }.
+      async intercept(patterns, respond) {
+        listeners.push({ sessionId, fn: (m, p) => {
+          if (m !== 'Fetch.requestPaused') return;
+          const r = respond(p.request) || {};
+          s('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: r.status ?? 200, responseHeaders: [{ name: 'Content-Type', value: r.type ?? 'text/plain' }, { name: 'Access-Control-Allow-Origin', value: '*' }], body: Buffer.from(r.body ?? '').toString('base64') }).catch(() => {});
+        } });
+        await s('Fetch.enable', { patterns: patterns.map(urlPattern => ({ urlPattern })) });
+      },
       async resize(w, h) { size.w = w; size.h = h; await metrics(); },
       async shot({ fullPage = false } = {}) {
         const h = fullPage ? Math.ceil(await tab.eval('document.documentElement.scrollHeight')) : size.h;

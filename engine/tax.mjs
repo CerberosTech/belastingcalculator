@@ -74,7 +74,7 @@ export function createEngine(P) {
     // Net value of the holiday allowance via marginal method
     const tZonder = incomeTax({ loon: fiscaalLoon - vg * (1 - pensioenPctWerknemer), aow }).totaal;
     const nettoVakantiegeld = vg ? r0(vg * (1 - pensioenPctWerknemer) - (loonheffing - tZonder)) : 0;
-    const nettoDm = dm ? r0(dm - (loonheffing - incomeTax({ loon: fiscaalLoon - dm * (1 - pensioenPctWerknemer), aow }).totaal)) : 0;
+    const nettoDm = dm ? r0(dm * (1 - pensioenPctWerknemer) - (loonheffing - incomeTax({ loon: fiscaalLoon - dm * (1 - pensioenPctWerknemer), aow }).totaal)) : 0;
     const nettoMaandExclVg = r0((nettoJaar - nettoVakantiegeld - nettoDm) / 12);
     return { brutoJaar: jaarBasis, vakantiegeld: r0(vg), dertiendeMaand: r0(dm), pensioen: r0(pensioen), fiscaalLoon: r0(fiscaalLoon), loonheffing, nettoJaar: r0(nettoJaar), nettoVakantiegeld, nettoMaandGemiddeld: r0(nettoJaar / 12), nettoMaandExclVakantiegeld: nettoMaandExclVg, gemiddeldTarief: fiscaalLoon ? loonheffing / fiscaalLoon : 0, detail: t };
   }
