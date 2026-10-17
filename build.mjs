@@ -320,6 +320,7 @@ ${alternates}
 <meta name="theme-color" content="${THEME}" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0A0D17" media="(prefers-color-scheme: dark)"><meta name="color-scheme" content="light dark">${THEME_JS}${FOLD_JS}
 <meta name="google-site-verification" content="7bn98qAl45WV4Q5VrQ-9FIYiC_JNoW4Zxqb2prfntAc" />
 <meta name="msvalidate.01" content="B9A9D4CCD8BC0851FDAA9F094498CF68" />
+<meta name="a95c544e83c4d4b" content="decae87ad37ac0fd45ab053769f9af12" />
 <link rel="icon" href="${BASE}/favicon.ico" sizes="32x32"><link rel="icon" href="${BASE}/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="${BASE}/apple-touch-icon.png">
 <meta property="og:type" content="${type}"><meta property="og:site_name" content="${BRAND}"><meta property="og:locale" content="${LOCALE[lang].og}">${alt[other(lang)] != null ? `<meta property="og:locale:alternate" content="${LOCALE[other(lang)].og}">` : ''}
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${abs(rel)}">
