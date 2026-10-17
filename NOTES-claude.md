@@ -157,3 +157,120 @@ See the section after "Brief 1" below.
 - **Two English descriptions are over 155 characters.** The build clips them with "…": `how-much-tax-to-set-aside-freelancer.md` (185) and `tax-credits-2026.md` (162). I did not change them, because the brief did not ask for it.
 - **Your own visits:** to exclude them, open any page with `#toggle-goatcounter` once. count.js then stores `skipgc` in localStorage in your own browser only.
 - **Not a git repo:** I committed nothing and pushed nothing.
+
+---
+
+# Redesign v2 (17-10-2026)
+
+## What I studied
+
+- **thetax.nl** (screenshots in `_ref/shots/v2/thetax/`). Good: the calculator is the first thing you see, the result changes as you type, the period select, the hours per week, the 30% ruling and 66+ options, and the output per year, month, week, day and hour. Weak: a plain Material form, a plain table as the only result, no visual, no explanation, no shared link, no other calculators, English only.
+- **The old site** (`_ref/shots/`): correct, but it looked like a document. The calculator was in a grey band under a long intro, and the result was a ledger only.
+
+## What I built
+
+- **Calculator first.** The home page hero (nl and en) is now the full net salary calculator, with every option. Every calculator page has a dark hero band with the calculator card on top of it.
+- **Net salary calculator:**
+  - Input per month, year or hour. When you switch, the amount converts (€4,000 per month becomes €48,000 per year).
+  - New fields: working hours per week, the 30% ruling (plus the under-30 master's threshold), and the tax year (2026, the only year with verified figures).
+  - Every amount has a slider next to it.
+- **Rich result on every calculator:**
+  - The main figure counts up to its new value.
+  - Animated stacked bars, for example "where your gross pay goes" and "tax before tax credits".
+  - Rate tiles: effective rate, marginal rate, and what you keep of €100 extra.
+  - An SVG chart with a "you are here" marker: net against gross (net salary), net against profit with the employee line (zzp), the benefit against salary (30% ruling) and the allowance against income (zorgtoeslag, straight from the table).
+  - A per-period table (year, month, 4 weeks, week, day, hour).
+- **Compare section:**
+  - Employee, freelancer or DGA, side by side, on the net salary and zzp calculators. **DGA is not calculated.** It needs the corporate income tax and the customary salary (gebruikelijk loon), and these are not in `params-2026.json`. The card says so.
+  - "What if you earn more?" (net salary and zzp).
+  - Scenario A against B on every calculator. Scenario A is kept in the URL (`vs=`), so a shared link shows the same comparison.
+- **Share and print:** "Copy link" (as before), "Copy result" (the result as plain text, with the link and the disclaimer) and "Print or PDF". The print stylesheet shows your inputs, the link, the result, the chart and the calculation.
+- **Design system** (`src/style.css`, rewritten):
+  - System font stack (no web font, no layout shift), tabular numbers.
+  - An indigo accent, with green for net and red for tax. Cards with depth and small motion.
+  - Dark mode: it follows the system. The toggle in the header stores the choice in localStorage, and an inline head script applies it before the first paint. I added one sentence about this to both privacy pages.
+  - `prefers-reduced-motion` turns off all motion.
+  - The same system is on every page: the calculators, the home page, the guide list (cards), the guides, methodology, privacy, about, affiliate and the 404 page (an article sheet on a soft band), in nl and en.
+- **Kept:** URLs, hreflang, sitemap, JSON-LD, the GoatCounter tag and click tracking, the verification meta tags, the affiliate slots and disclosure, the disclaimers, the sources and the IndexNow key. `engine/` and `data/` are unchanged.
+
+## How the 30% ruling in the net salary calculator works (no new tax maths)
+
+It uses only engine functions, in the same two steps as the 30% ruling calculator: `E.expat` gives the tax-free allowance over the taxable salary (after pension, with holiday allowance and 13th month), and `E.incomeTax` gives the tax on the rest. The net holiday allowance and net 13th month are the difference in annual net with and without them. Without the ruling, all figures are the engine's own, and the defaults give the same result as before (€3,179 net per month at €4,000 gross, in both languages).
+
+## Verification
+
+- `node --test test/`: 20/20 pass.
+- `node build.mjs`: 40 pages, no warnings.
+- `node scripts/check.mjs`: 41 pages at 360 and 1280 px, no problems. New behaviour checks in both languages: the slider sets the amount and the URL, month → year converts the amount, scenario A/B makes a table and comes back from a shared link, the copy result / print / scenario / theme buttons show, the theme toggle switches, and the home page has the calculator under the hero. A mutation test (no period conversion, hidden scenario button) made the check fail, as expected.
+- **Code review** (a separate review agent): it found 3 bugs, and I fixed all 3. (1) After a shared link in year or hour mode, the first period switch converted from the wrong period. A new check covers this. (2) The URL was written on every slider frame. Safari allows 100 `replaceState` calls per 30 seconds, so URL writes now happen at most once per 400 ms, and the last change is always written. (3) `aria-invalid` had an empty value, which screen readers read as "not invalid". It is now `"true"`.
+- Screenshots for self-review: `_ref/shots/v2/after/` (desktop 1366 px and mobile 390 px, light and dark). Make new ones with `node scripts/shots.mjs OUTDIR [page …] [--dark]`.
+
+## Open points for the owner
+
+- **DGA comparison:** to calculate it, add the 2026 corporate income tax brackets and the customary salary to `params-2026.json`, with sources and a test.
+- **Other tax years:** the year is shown, but only 2026 has figures. thetax.nl goes back to 2015.
+- **Hourly figures** use 52 weeks × the hours per week. A day is 1/260 of a year.
+
+---
+
+# v2 mobile pass (17-10-2026)
+
+## Result
+
+The mobile pages are about half as long. Heights at 390 px, before and after:
+
+| Page | Before | After |
+|---|---|---|
+| `/` | 10,453 px | 5,545 px (−47%) |
+| `/en/` | 10,756 px | 5,584 px (−48%) |
+| `/netto-salaris-berekenen/` | 9,580 px | 5,063 px |
+| `/zzp-belasting-berekenen/` | 10,095 px | 5,333 px |
+| `/inkomstenbelasting-berekenen/` | 7,720 px | 4,523 px |
+| `/box-3-berekenen/` | 7,272 px | 4,017 px |
+| `/vakantiegeld-berekenen/` | 6,064 px | 3,435 px |
+| `/30-procent-regeling-berekenen/` | 6,493 px | 3,737 px |
+| `/zorgtoeslag-berekenen/` | 7,444 px | 3,575 px |
+
+The desktop look did not change. I took full-page screenshots of all 41 pages at 1366 px (light and dark) before and after. They are pixel-identical. At 800 px, the only difference is the old result bar. It showed on page load and covered a field label; the new bar does not.
+
+## What I built
+
+- **Folds.** Long parts are now `<details data-fold>` with the heading in the `<summary>` (`fold()` in `site/calcs.mjs`):
+  - every calculator (home too): the calculation, the per-period table and the compare section;
+  - calculator pages: "how it works", the FAQ and, on zorgtoeslag, the other allowances;
+  - the home page: the guide list (a "Show the 7 guides" bar under the heading, which keeps its "All guides" link) and "how we calculate";
+  - every page: the footer columns.
+- **No layout shift.** The HTML has `open`. On a screen of 760 px (47.5em) or less, a small inline script in `<head>` closes each fold as the parser adds it. Mutation records are handled before the browser paints, so the page never shows them open. Without JavaScript all folds stay open. Search engines get the full content, and the FAQ JSON-LD is unchanged.
+- **Wide screens:** the folds stay open and look like the old headings. `client.js` blocks the toggle there and takes the summaries out of the tab order.
+- **Anchors and print:** a link to an anchor inside a closed fold opens it (for example `#faq-h`). Printing opens all folds and closes them again after.
+- **Result card:** still directly under the form. The notes of the net salary calculator stay visible under the per-period fold, because they hold the 30% ruling result.
+- **Result bar** (below 960 px, where the layout has one column):
+  - It shows the live main figure ("Netto per maand € 3.798") while you edit the form and the result card is off screen.
+  - It appears only after the first input or focus in the form, so it does not cover the form on a fresh page.
+  - It hides as soon as the result card is above the bottom 96 px of the screen. So the last field can always scroll clear of it, and it never covers the result.
+  - A tap scrolls to the result (under the sticky header) and moves the focus to the result heading. The URL keeps no `#fragment`.
+  - It sits above the safe area (`env(safe-area-inset-*)`) and above an on-screen keyboard (`visualViewport`). While it shows, `scroll-padding-bottom` keeps focused fields clear of it.
+  - It is a link with a visible label and amount, plus a hidden "– go to the result". It is not a live region, because the result head already announces changes.
+- **Smaller mobile tweaks:** the calculator lists are compact rows (icon, title, example). The short text is hidden on mobile only and stays in the HTML. The per-period table now fits at 390 px; before, the net column was cut off ("€ 48.07").
+
+## Verification
+
+- `node --test test/`: 20/20 pass. `engine/` and `data/` are unchanged.
+- `node build.mjs`: 40 pages, no warnings.
+- `node scripts/check.mjs`: 41 pages, no problems. New checks (none of the old checks were removed or relaxed):
+  - Static: every fold is open in the HTML and starts with its summary. The calculation, per-period table, compare section, "how it works", FAQ, guide list, trust text and other allowances are in a fold. Every JSON-LD block parses. Every FAQ question and answer from the JSON-LD is in the FAQ section of the HTML.
+  - Every page at 360 and 1280 px: CLS on load is 0.001 or less. Folds are closed at 360 px and open at 1280 px. The result card is directly under the form. The overflow and tap-target checks now run with every fold open, so collapsed content is still checked. Summaries count as tap targets on mobile.
+  - Wide screen: a fold does not toggle and is no tab stop, and the result bar never shows.
+  - 390 px, both languages:
+    - the home page heights are printed, with a budget of 6,500 px;
+    - the result bar: hidden before input, shown while editing, the same figure as the result after two inputs, at the bottom of the screen, 44 px or higher, with scroll padding and a clear name;
+    - it does not cover the last field, and it hides when the result card is in view;
+    - a tap scrolls to the result and moves the focus there, with no hash;
+    - a tap opens a fold, `#faq-h` opens the FAQ, and print opens and then restores the folds.
+- **Mutation test of the check.** I broke `dist/` six ways: no head script, a fold closed in the HTML, the per-period table outside its fold, a FAQ answer removed from the HTML, a result bar that does not update, and a late 100 px block. The check caught all six, then I rebuilt.
+- Screenshots: `_ref/shots/v2/mobile/` (390 px, light and dark, plus the result bar).
+
+## Open points for the owner
+
+- **Safari:** the compare heading row on wide screens is a `<summary>` with `display: flex`. I checked the pixels in Chrome only. Old Safari versions ignored flex on `<summary>`. If so, the short line "Zet je uitkomst naast andere keuzes…" moves under the heading on desktop Safari. Nothing else changes.
+- **Real phones:** I tested with Chrome device emulation. Please check the result bar once on an iPhone with the keyboard open.
