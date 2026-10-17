@@ -16,6 +16,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     disclaimer: '<p><strong>Indicative calculation — not tax advice.</strong> Always check with the Belastingdienst (Dutch Tax Administration).</p><p>The result is an estimate based on the 2026 figures. You cannot derive any rights from it.</p>',
     yourData: 'Your details', noscript: 'Turn on JavaScript to calculate with your own amounts. Next to this form you see an example.', result: 'Result',
     copyLink: 'Copy link', sources: 'Sources', seeAlso: 'See also', methodLower: 'methodology and sources',
+    copyResult: 'Copy result', print: 'Print or PDF', theme: 'Dark mode', calcBadge: 'Live calculator', perks: ['2026 figures', 'No cookies', 'With sources'], open: 'Open', showGuides: n => `Show the ${n} guides`, fullCalc: 'Open the calculator',
     faq: 'Frequently asked questions', otherCalcs: 'Other calculators', how: 'How does it work?', howMethod: 'Methodology and sources: all figures and rounding rules', example: 'Example',
   };
 
@@ -181,7 +182,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     h1: 'Dutch tax calculator 2026',
     lead: 'Work out your net salary, Dutch income tax, freelancer (zzp) tax and box 3 with the 2026 figures. In English, with the official Dutch source for every amount.',
     facts: ['Free, no account needed', 'No cookies, only anonymous visit counts', 'Tested against the worked examples of the Belastingdienst'],
-    quick: 'Quick net salary', allCalcs: 'All calculators', guides: 'Guides', noGuides: 'Guides will appear here soon.',
+    quick: 'Net salary: gross to net', allCalcs: 'All calculators', guides: 'Guides', noGuides: 'Guides will appear here soon.',
     trustH: 'How we calculate',
     trust: '<p>All rates, credits and limits come from belastingdienst.nl, rijksoverheid.nl and officielebekendmakingen.nl. We round like the Belastingdienst does. Our box 3 calculation matches all 5 official worked examples to the euro.</p><p>The calculators work the same as the Dutch version of this site, with the same figures.</p>',
     trustLink: 'See all figures and sources',
@@ -298,6 +299,7 @@ ${src(KB.src)}
 <p>Your input is part of the page address (for example <code>?bruto=4000</code>). That is how you share a calculation with the "Copy link" button. If you share that link, the person who opens it sees your amounts. Your browser can keep the address in its history.</p>
 <h2>No cookies</h2>
 <p>We set no cookies, and neither does GoatCounter. We use no ad networks and no social media buttons. That is why there is no cookie banner either.</p>
+<p>If you use the dark mode button, your browser keeps that choice (light or dark) in its own storage (localStorage). It never leaves your device.</p>
 <h2>Visit statistics with GoatCounter</h2>
 <p>We count visits with <a href="${OFFICIAL.goatcounter}" rel="noopener">GoatCounter</a>. This shows us how often a page is read and how often someone clicks a link to a service. We see totals only, not people.</p>
 <ul>
