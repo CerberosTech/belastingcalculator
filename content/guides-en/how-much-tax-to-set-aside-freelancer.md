@@ -1,6 +1,6 @@
 ---
 title: "Dutch freelancer (zzp): how much tax to set aside in 2026"
-description: How much should you reserve as a Dutch freelancer for income tax and the Zvw health insurance contribution in 2026? With a worked example on €50,000 profit and practical rules of thumb.
+description: "How much should Dutch freelancers set aside for income tax and the Zvw contribution in 2026? A worked example on €50,000 profit plus rules of thumb."
 slug: how-much-tax-to-set-aside-freelancer
 translationOf: hoeveel-belasting-opzij-zetten-zzp
 updated: 2026-10-17
