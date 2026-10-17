@@ -15,6 +15,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     disclaimer: '<p><strong>Indicatieve berekening — geen belastingadvies.</strong> Controleer altijd bij de Belastingdienst.</p><p>De uitkomst is een schatting met de cijfers van 2026. Aan deze berekening kun je geen rechten ontlenen.</p>',
     yourData: 'Jouw gegevens', noscript: 'Zet JavaScript aan om met je eigen bedragen te rekenen. Hiernaast zie je een voorbeeld.', result: 'Uitkomst',
     copyLink: 'Kopieer link', sources: 'Bronnen', seeAlso: 'Zie ook', methodLower: 'methode en bronnen',
+    copyResult: 'Kopieer uitkomst', print: 'Print of PDF', theme: 'Donkere modus', calcBadge: 'Live calculator', perks: ['Cijfers 2026', 'Geen cookies', 'Met bronnen'], open: 'Open', showGuides: n => `Toon de ${n} gidsen`, fullCalc: 'Open de calculator',
     faq: 'Veelgestelde vragen', otherCalcs: 'Andere calculators', how: 'Hoe werkt dit?', howMethod: 'Methode en bronnen: alle cijfers en afrondingsregels', example: 'Voorbeeld',
   };
 
@@ -180,7 +181,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     h1: 'Belasting berekenen 2026',
     lead: 'Reken je netto salaris, inkomstenbelasting, zzp-belasting en box 3 uit met de cijfers van 2026. Elk bedrag komt van de Belastingdienst, met bron.',
     facts: ['Gratis en zonder account', 'Geen cookies, alleen anonieme bezoekstatistiek', 'Getest met de rekenvoorbeelden van de Belastingdienst'],
-    quick: 'Snel je netto salaris', allCalcs: 'Alle calculators', guides: 'Gidsen', noGuides: 'Binnenkort staan hier gidsen.',
+    quick: 'Netto salaris: bruto naar netto', allCalcs: 'Alle calculators', guides: 'Gidsen', noGuides: 'Binnenkort staan hier gidsen.',
     trustH: 'Zo rekenen we',
     trust: '<p>Alle tarieven, kortingen en grenzen komen van belastingdienst.nl, rijksoverheid.nl en officielebekendmakingen.nl. We ronden af zoals de Belastingdienst dat doet. De box 3-berekening komt bij alle 5 officiële rekenvoorbeelden op de euro uit.</p>',
     trustLink: 'Bekijk alle cijfers en bronnen',
@@ -297,6 +298,7 @@ ${src(KB.src)}
 <p>Je invoer staat wel in het adres van de pagina (bijvoorbeeld <code>?bruto=4000</code>). Zo kun je een berekening delen met de knop "Kopieer link". Deel je die link, dan ziet de ontvanger jouw bedragen. Je browser kan het adres in je geschiedenis bewaren.</p>
 <h2>Geen cookies</h2>
 <p>We plaatsen geen cookies, en GoatCounter ook niet. We gebruiken geen advertentienetwerken en geen social-media-knoppen. Daarom vragen we ook geen toestemming met een cookiebanner.</p>
+<p>Gebruik je de knop voor de donkere modus? Dan bewaart je browser die keuze (licht of donker) in zijn eigen opslag (localStorage). Die keuze verlaat je apparaat niet.</p>
 <h2>Bezoekersstatistiek met GoatCounter</h2>
 <p>We tellen bezoeken met <a href="${OFFICIAL.goatcounter}" rel="noopener" hreflang="en">GoatCounter</a>. Zo zien we hoe vaak een pagina wordt gelezen en hoe vaak iemand op een link naar een dienst klikt. We zien alleen totalen, geen personen.</p>
 <ul>
