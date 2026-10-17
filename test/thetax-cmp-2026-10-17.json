@@ -1,0 +1,100 @@
+[
+ {
+  "v": 30000,
+  "ruling": false,
+  "old": false,
+  "rows": [
+   "Taxable Income €30,000.00",
+   "Payroll Tax -€2,430.00",
+   "Social Security Tax -€8,295.00",
+   "General Tax Credit €3,098.17",
+   "Labour Tax Credit €5,381.04",
+   "Year Net Income €27,754.21",
+   "Month Net Income €2,312.85"
+  ]
+ },
+ {
+  "v": 45000,
+  "ruling": false,
+  "old": false,
+  "rows": [
+   "Taxable Income €45,000.00",
+   "Payroll Tax -€5,447.07",
+   "Social Security Tax -€10,750.87",
+   "General Tax Credit €2,138.47",
+   "Labour Tax Credit €5,673.54",
+   "Year Net Income €36,614.07",
+   "Month Net Income €3,051.17"
+  ]
+ },
+ {
+  "v": 60000,
+  "ruling": false,
+  "old": false,
+  "rows": [
+   "Taxable Income €60,000.00",
+   "Payroll Tax -€11,081.07",
+   "Social Security Tax -€10,750.87",
+   "General Tax Credit €1,178.77",
+   "Labour Tax Credit €4,747.13",
+   "Year Net Income €44,093.96",
+   "Month Net Income €3,674.50"
+  ]
+ },
+ {
+  "v": 90000,
+  "ruling": false,
+  "old": false,
+  "rows": [
+   "Taxable Income €90,000.00",
+   "Payroll Tax -€23,731.13",
+   "Social Security Tax -€10,750.87",
+   "General Tax Credit €0.00",
+   "Labour Tax Credit €2,794.13",
+   "Year Net Income €58,312.13",
+   "Month Net Income €4,859.34"
+  ]
+ },
+ {
+  "v": 150000,
+  "ruling": false,
+  "old": false,
+  "rows": [
+   "Taxable Income €150,000.00",
+   "Payroll Tax -€53,431.13",
+   "Social Security Tax -€10,750.87",
+   "General Tax Credit €0.00",
+   "Labour Tax Credit €0.00",
+   "Year Net Income €85,818.00",
+   "Month Net Income €7,151.50"
+  ]
+ },
+ {
+  "v": 70000,
+  "ruling": true,
+  "old": false,
+  "rows": [
+   "Taxable Income €52,920.00",
+   "Payroll Tax -€8,421.82",
+   "Social Security Tax -€10,750.87",
+   "General Tax Credit €1,631.75",
+   "Labour Tax Credit €5,208.04",
+   "Year Net Income €63,267.10",
+   "Month Net Income €5,272.26"
+  ]
+ },
+ {
+  "v": 40000,
+  "ruling": false,
+  "old": true,
+  "rows": [
+   "Taxable Income €40,000.00",
+   "Payroll Tax -€3,569.07",
+   "Social Security Tax -€3,791.00",
+   "General Tax Credit €3,294.42",
+   "Labour Tax Credit €2,784.18",
+   "Year Net Income €38,718.53",
+   "Month Net Income €3,226.54"
+  ]
+ }
+]

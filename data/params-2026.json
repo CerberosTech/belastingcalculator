@@ -1,0 +1,99 @@
+{
+  "year": 2026,
+  "retrieved": "2026-10-17",
+  "notes": "All figures from belastingdienst.nl / rijksoverheid.nl / overheid.nl; see data/sources.json (ids in 'src'). 'provisional': true = officially labelled voorlopig.",
+  "box1": {
+    "src": ["bd_va2026", "bd_fisin_berekening"],
+    "belowAOW": [{"upTo": 38883, "rate": 0.3575}, {"upTo": 78426, "rate": 0.3756}, {"upTo": null, "rate": 0.4950}],
+    "aowBornFrom1946": [{"upTo": 38883, "rate": 0.1785}, {"upTo": 78426, "rate": 0.3756}, {"upTo": null, "rate": 0.4950}],
+    "aowBornBefore1946": [{"upTo": 41123, "rate": 0.1785}, {"upTo": 78426, "rate": 0.3756}, {"upTo": null, "rate": 0.4950}],
+    "aowReachedIn2026FirstBracketByMonth": [0.1785,0.1934,0.2083,0.2232,0.2381,0.2530,0.2680,0.2829,0.2978,0.3127,0.3276,0.3425],
+    "premieVolksverzekeringen": {"AOW": 0.179, "Anw": 0.001, "Wlz": 0.0965, "belastingdeel": 0.081, "src": ["bd_fisin_kortingen"]}
+  },
+  "algemeneHeffingskorting": {
+    "src": ["bd_fisin_kortingen", "ro_heffingskorting"],
+    "basis": "verzamelinkomen",
+    "belowAOW": {"max": 3115, "phaseOutFrom": 29736, "phaseOutRate": 0.06398, "zeroFrom": 78426},
+    "aowWholeYear": {"max": 1556, "phaseOutFrom": 29736, "phaseOutRate": 0.03195, "zeroFrom": 78426}
+  },
+  "arbeidskorting": {
+    "src": ["bd_tabel_ak2026", "bd_fisin_kortingen"],
+    "basis": "arbeidsinkomen (winst vóór ondernemersaftrek en mkb-winstvrijstelling)",
+    "belowAOW": [
+      {"from": 0, "to": 11965, "base": 0, "rate": 0.08324},
+      {"from": 11965, "to": 25845, "base": 996, "rate": 0.31009},
+      {"from": 25845, "to": 45592, "base": 5300, "rate": 0.01950},
+      {"from": 45592, "to": 132920, "base": 5685, "rate": -0.06510},
+      {"from": 132920, "to": null, "base": 0, "rate": 0}
+    ],
+    "aowWholeYear": [
+      {"from": 0, "to": 11965, "base": 0, "rate": 0.04156},
+      {"from": 11965, "to": 25845, "base": 498, "rate": 0.15483},
+      {"from": 25845, "to": 45592, "base": 2647, "rate": 0.00974},
+      {"from": 45592, "to": 132920, "base": 2840, "rate": -0.03250},
+      {"from": 132920, "to": null, "base": 0, "rate": 0}
+    ]
+  },
+  "inkomensafhankelijkeCombinatiekorting": {
+    "src": ["bd_fisin_kortingen", "bd_va2026"],
+    "belowAOW": {"minArbeidsinkomen": 6239, "rate": 0.1145, "max": 3032},
+    "aowWholeYear": {"minArbeidsinkomen": 6239, "rate": 0.0572, "max": 1514},
+    "note": "Max reached at €32.719 per fisin2026; voorlopige-aanslag page prints €32.710. Engine uses min(rate*(ai-6239), max) so both agree on the cap."
+  },
+  "ouderenkorting": {"src": ["bd_fisin_kortingen"], "max": 2067, "phaseOutFrom": 46002, "phaseOutRate": 0.15, "zeroFrom": 59782},
+  "alleenstaandeOuderenkorting": {"src": ["bd_fisin_kortingen"], "amount": 540},
+  "jonggehandicaptenkorting": {"src": ["bd_fisin_kortingen"], "amount": 923},
+  "ondernemer": {
+    "src": ["bd_zelfstandigenaftrek2026", "bd_mkb2026", "bd_urencriterium", "ro_sleuteltabel2026"],
+    "urencriteriumUren": 1225,
+    "zelfstandigenaftrek": 1200, "zelfstandigenaftrekAOW": 600,
+    "startersaftrek": 2123, "startersaftrekAOW": 1062,
+    "mkbWinstvrijstelling": 0.127,
+    "aftrekTariefBeperking": 0.3756,
+    "zelfstandigenaftrekMaxIsWinstUnlessStarter": true
+  },
+  "kor": {"src": ["bd_kor"], "omzetgrens": 20000},
+  "zvw": {
+    "src": ["bd_zvw_pct", "bd_fisin_zvw", "stcrt_2025_38055"],
+    "werkgeversheffing": 0.061, "bijdrageZelf": 0.0485, "maxBijdrageInkomen": 79409
+  },
+  "box2": {"src": ["bd_box2"], "brackets": [{"upTo": 68843, "rate": 0.245}, {"upTo": null, "rate": 0.31}]},
+  "box3": {
+    "src": ["bd_box3_2026", "bd_va2026", "bd_werkelijk_rendement"],
+    "heffingsvrijVermogen": 59357, "heffingsvrijVermogenPartners": 118714,
+    "schuldendrempelPerPersoon": 3800,
+    "rendement": {"bank": {"rate": 0.0128, "provisional": true}, "overig": {"rate": 0.06, "provisional": false}, "schulden": {"rate": 0.027, "provisional": true}},
+    "tarief": 0.36,
+    "groeneBeleggingenVrijstellingPerPersoon": 26715,
+    "werkelijkRendement": "Tegenbewijsregeling: lager werkelijk rendement mag worden aangetoond; dan geen heffingsvrij vermogen, negatief = 0. Nieuwe wet verwacht per 2028 (Belastingdienst)."
+  },
+  "expatregeling": {"src": ["bd_expat"], "salarisnorm": 48013, "salarisnormOnder30Master": 36497, "maxVergoeding": 78600, "wntNorm": 262000, "pct": 0.30},
+  "toeslagen": {
+    "zorgtoeslag": {
+      "src": ["bd_zorgtoeslag_hoeveel", "stcrt_2025_40022"],
+      "standaardpremie": 2119, "provisionalNote": "Monthly table (rounded) from Dienst Toeslagen.",
+      "tableSingle": [[29500,129],[30000,126],[30500,120],[31000,114],[31500,109],[32000,103],[32500,97],[33000,91],[33500,86],[34000,80],[34500,74],[35000,69],[35500,63],[36000,57],[36500,51],[37000,46],[37500,40],[38000,34],[38500,28],[39000,23],[39500,17],[40000,11],[40500,6],[41000,0]],
+      "tablePartner": [[29500,246],[30000,243],[30500,238],[31000,232],[31500,226],[32000,221],[32500,215],[33000,209],[33500,203],[34000,198],[34500,192],[35000,186],[35500,180],[36000,175],[36500,169],[37000,163],[37500,158],[38000,152],[38500,146],[39000,140],[39500,135],[40000,129],[40500,123],[41000,118],[41500,112],[42000,106],[42500,100],[43000,95],[43500,89],[44000,83],[44500,78],[45000,72],[45500,66],[46000,60],[46500,55],[47000,49],[47500,43],[48000,37],[48500,32],[49000,26],[49500,20],[50000,15],[50500,9],[51000,3],[51500,0]],
+      "tableMeaning": "[incomeUpTo, euroPerMonth]: income below first column value gets that amount"
+    },
+    "huurtoeslag": {
+      "src": ["ro_huurtoeslag2026"],
+      "provisional": true, "provisionalNote": "Rijksoverheid nieuwsbericht 25-11-2025: nog vast te stellen in Staatscourant.",
+      "huurgrens": 932.93, "kwaliteitskortingsgrens": 498.20, "aftoppingsgrensLaag": 713.02, "aftoppingsgrensHoog": 764.14,
+      "minimumBasishuurEen": 202.52, "minimumBasishuurMeer": 200.71,
+      "inkomensgrensMinEigenBijdrageEen": 23425, "inkomensgrensMinEigenBijdrageMeer": 31500,
+      "pct": {"totKwaliteitskorting": 1.0, "totAftopping": 0.65, "boven": 0.40},
+      "engine": "Not calculated: normhuur formula factors not verified; site links to official proefberekening."
+    },
+    "kinderopvangtoeslag": {
+      "src": ["ro_kot2026"], "maxUurprijs": {"dagopvang": 11.23, "bso": 9.98, "gastouder": 8.49}, "maxUrenPerMaand": 230,
+      "note": "96% (both children) up to toetsingsinkomen €56.412; full table on source page. Not calculated beyond that (table partly unreadable in retrieval)."
+    },
+    "kindgebondenBudget": {
+      "src": ["wetten_wkb2026"], "verified": false,
+      "perKind": 2580, "extra12tot15": 724, "extra16tot17": 964, "alleenstaandeOuderKop": 3416,
+      "afbouwRate": 0.076, "drempelAlleenstaand": 29736, "drempelPartners": 39141,
+      "note": "From web-search synthesis citing wetten.overheid.nl; not independently re-read. Shown as provisional; not used in calculators."
+    }
+  }
+}
