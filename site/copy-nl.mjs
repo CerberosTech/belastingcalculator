@@ -153,6 +153,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     heading: 'Boekhouding en zakelijke rekening',
     note: `Advertentie / affiliate — zie <a href="${url('affiliate')}">disclosure</a>`,
     intro: 'Als ondernemer houd je een administratie bij. Een aparte zakelijke rekening maakt dat makkelijker. Deze diensten staan op alfabetische volgorde. We hebben ze niet getest of vergeleken.',
+    homeHeading: 'Voor zzp’ers: boekhouden &amp; zakelijk bankieren', homeIntro: 'Werk je als zzp’er? Dan heb je boekhouding en een zakelijke rekening nodig. Deze diensten staan op alfabetische volgorde. We hebben ze niet getest. Dit is geen belastingadvies.',
     software: 'Boekhoudprogramma\'s', bank: 'Zakelijke rekening',
   };
 
@@ -321,7 +322,7 @@ ${src(KB.src)}
 <p>Als je via zo'n link een account aanmaakt of een abonnement neemt, kunnen wij een vergoeding krijgen van die dienst. Jij betaalt daar niets extra voor.</p>
 <h2>Welke diensten?</h2>
 <ul>${[...AFFILIATE.boekhouden, ...AFFILIATE.bank].map(a => `<li>${esc(a.name)}: ${esc(a.what.nl)}</li>`).join('')}</ul>
-<p>Op dit moment zijn dit gewone links naar de websites van deze diensten. Ze kunnen later affiliate-links worden. Alle links hebben het kenmerk <code>rel="sponsored"</code>.</p>
+<p>Sommige van deze links zijn affiliate-links, of kunnen dat worden. Als je via zo'n link een dienst afneemt, kunnen wij een commissie krijgen. Jij betaalt daar niets extra voor. Alle links hebben het kenmerk <code>rel="sponsored"</code>.</p>
 <h2>Onze regels</h2>
 <ul><li>De berekeningen zijn nooit afhankelijk van een affiliate-partij.</li><li>We zetten diensten op alfabetische volgorde. We noemen niets "de beste".</li><li>We schrijven geen reviews en tonen geen beoordelingen.</li><li>We tonen geen advertenties van advertentienetwerken.</li></ul>` },
     over: { h1: 'Over Belastingcalculator (2026)', title: 'Over Belastingcalculator: belasting rekenen in 2026', desc: 'Belastingcalculator is een onafhankelijke, gratis site om je belasting voor 2026 te berekenen. Lees hoe we werken en hoe je contact opneemt.', html: `
