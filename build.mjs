@@ -351,12 +351,13 @@ const perks = lang => `<ul class="perks">${COPY[lang].ui.perks.map(p => `<li>${i
 const disclaimer = lang => `<aside class="disclaimer" aria-label="${esc(COPY[lang].ui.disclaimerLabel)}">${icon('info', 'ic d-ic')}<div>${COPY[lang].ui.disclaimer}</div></aside>`;
 
 // GoatCounter click event for an outgoing link: kind 'aff' (affiliate) or 'newsletter'. The name comes from the config.
-const track = (kind, name) => ` data-goatcounter-click="${kind}-${slug(name)}" data-goatcounter-title="${esc(`${kind === 'aff' ? 'Affiliate' : 'Newsletter'}: ${name}`)}"`;
-function affiliateBlock(lang, id = 'aff') {
+const track = (kind, name, prefix = kind) => ` data-goatcounter-click="${prefix}-${slug(name)}" data-goatcounter-title="${esc(`${kind === 'aff' ? 'Affiliate' : 'Newsletter'}: ${name}`)}"`;
+// opts.home: compact variant for the homepages (own heading and intro, click names aff-home-<name>, class aff-home).
+function affiliateBlock(lang, id = 'aff', { home = false } = {}) {
   const A = COPY[lang].affiliate;
-  const item = a => `<li><a href="${esc(a.url)}" rel="sponsored nofollow noopener"${lang === 'en' ? ' hreflang="nl"' : ''}${track('aff', a.name)}><strong>${esc(a.name)}</strong><span>${esc(a.what[lang])}</span></a></li>`;
-  return `<aside class="aff" aria-labelledby="${id}-h"><div class="aff-top"><h2 id="${id}-h">${A.heading}</h2><p class="aff-note">${A.note}</p></div>
-<p>${A.intro}</p>
+  const item = a => `<li><a href="${esc(a.url)}" rel="sponsored nofollow noopener"${lang === 'en' ? ' hreflang="nl"' : ''}${track('aff', a.name, home ? 'aff-home' : 'aff')}><strong>${esc(a.name)}</strong><span>${esc(a.what[lang])}</span></a></li>`;
+  return `<aside class="aff${home ? ' aff-home' : ''}" aria-labelledby="${id}-h"><div class="aff-top"><h2 id="${id}-h">${home ? A.homeHeading : A.heading}</h2><p class="aff-note">${A.note}</p></div>
+<p>${home ? A.homeIntro : A.intro}</p>
 <h3>${A.software}</h3><ul class="aff-list">${AFFILIATE.boekhouden.map(item).join('')}</ul>
 <h3>${A.bank}</h3><ul class="aff-list">${AFFILIATE.bank.map(item).join('')}</ul></aside>`;
 }
@@ -447,6 +448,7 @@ ${updatedLine(lang)}
 <ul class="perks">${H.facts.map(f => `<li>${icon('check')}${f}</li>`).join('')}</ul></div></div>
 <div class="calc-band"><div class="wrap">${calcWidget(lang, 'netto')}</div></div>
 <div class="wrap content wide">
+${affiliateBlock(lang, 'aff-home', { home: true })}
 <section class="sec" aria-labelledby="calculators"><div class="sec-top"><h2 id="calculators">${H.allCalcs}</h2></div>
 <ul class="calc-index">${calcsOf(lang).map(c => `<li><a href="${url(c.key, lang)}"><span class="ci-ic">${icon(c.key)}</span><strong>${esc(c.h1)}</strong><span class="ci-s">${esc(c.short)}</span><span class="ex">${ui.example}: ${exampleOf(c)}</span>${icon('arrow', 'ic ci-go')}</a></li>`).join('')}</ul></section>
 <section class="sec" aria-labelledby="gidsen-h"><div class="sec-top"><h2 id="gidsen-h">${H.guides}</h2><p class="more"><a href="${url('gidsen', lang)}">${ui.footer.allGuides}</a></p></div>
