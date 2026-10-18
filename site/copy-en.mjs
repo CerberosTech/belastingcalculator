@@ -154,6 +154,7 @@ export default function copy({ P, ex, zGrens, eur, pct, num, esc, url, BRAND, OF
     heading: 'Bookkeeping and business bank account',
     note: `Advertisement / affiliate — see <a href="${url('affiliate')}">disclosure</a>`,
     intro: 'As a business owner you keep records. A separate business account makes that easier. These services are listed in alphabetical order. We have not tested or compared them. Their websites are mostly in Dutch.',
+    homeHeading: 'For freelancers: bookkeeping &amp; business banking', homeIntro: 'Do you work as a freelancer in the Netherlands? Then you need bookkeeping and a business account. These services are listed in alphabetical order. We have not tested them. This is not tax advice. Their websites are mostly in Dutch.',
     software: 'Bookkeeping software', bank: 'Business bank account',
   };
 
@@ -322,7 +323,7 @@ ${src(KB.src)}
 <p>If you open an account or take out a subscription through such a link, the service may pay us a fee. You pay nothing extra.</p>
 <h2>Which services?</h2>
 <ul>${[...AFFILIATE.boekhouden, ...AFFILIATE.bank].map(a => `<li>${esc(a.name)}: ${esc(a.what.en)}</li>`).join('')}</ul>
-<p>For now these are plain links to the websites of these services. They may become affiliate links later. All of them carry the attribute <code>rel="sponsored"</code>.</p>
+<p>Some of these links are affiliate links, or may become affiliate links. If you sign up through such a link, we may earn a commission. You pay nothing extra. All of them carry the attribute <code>rel="sponsored"</code>.</p>
 <h2>Our rules</h2>
 <ul><li>The calculations never depend on an affiliate partner.</li><li>We list services in alphabetical order. We never call anything "the best".</li><li>We write no reviews and show no ratings.</li><li>We show no ads from ad networks.</li></ul>` },
     over: { h1: 'About Belastingcalculator (2026)', title: 'About Belastingcalculator: Dutch tax for 2026', desc: 'Belastingcalculator is an independent, free site to calculate your Dutch tax for 2026, in Dutch and English. Read how we work and how to contact us.', html: `
