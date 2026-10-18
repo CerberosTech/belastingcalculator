@@ -444,6 +444,14 @@ summary { cursor: pointer; font-weight: 650; min-height: 44px; display: flex; al
 .aff-list a:hover { border-color: var(--brand); }
 .aff-list strong { color: var(--brand-ink); }
 .aff-list span { font-size: .88rem; color: var(--ink-2); }
+.aff-home { margin: 1.5rem 0 0; padding: .9rem 1rem 1rem; border: 1px solid var(--line-2); border-left: 3px solid var(--brand); background: var(--surface); box-shadow: var(--shadow-1); }
+.aff-home h2 { font-size: 1.05rem; }
+.aff-home > p { margin: 0 0 .2rem; font-size: .9rem; color: var(--ink-2); }
+.aff-home h3 { margin: .7rem 0 .35rem; font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
+.aff-home .aff-list { gap: .4rem; }
+.aff-home .aff-list a { padding: .5rem .7rem; }
+.aff-home .aff-list span { font-size: .82rem; }
+@media (min-width: 52em) { .aff-home .aff-list { grid-template-columns: repeat(4, 1fr); } }
 
 /* Info blocks (toeslagen) */
 .info h3 { display: flex; flex-wrap: wrap; gap: .4rem; align-items: baseline; }
