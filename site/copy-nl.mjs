@@ -313,18 +313,23 @@ ${src(KB.src)}
 <h2>Hosting</h2>
 <p>De site staat op GitHub Pages. GitHub verwerkt technische gegevens, zoals je IP-adres, om de pagina's te leveren en te beveiligen. Lees de <a href="${OFFICIAL.ghPrivacy}" rel="noopener" hreflang="en">privacyverklaring van GitHub</a> (Engels).</p>
 <h2>Links naar andere sites</h2>
-<p>We linken naar de Belastingdienst, de Rijksoverheid en een paar commerciële diensten. Klik je daarop, dan geldt het privacybeleid van die site. Zie ook de <a href="${url('affiliate')}">affiliate-disclosure</a>.</p>
+<p>We linken naar de Belastingdienst, de Rijksoverheid, bol.com en een paar andere commerciële diensten. Klik je daarop, dan geldt het privacybeleid van die site. Een bol.com-link loopt via partner.bol.com; bol.com kan dan cookies plaatsen om een commissie toe te wijzen. Zie de <a href="${url('affiliate')}">affiliate-disclosure</a>.</p>
 <h2>Vragen</h2>
 <p>Heb je een vraag over privacy? Maak een melding op <a href="${OFFICIAL.contact}" rel="noopener">GitHub</a>.</p>` },
-    affiliate: { h1: 'Affiliate-disclosure 2026', title: 'Affiliate-disclosure 2026 | Belastingcalculator', desc: 'Hoe Belastingcalculator geld kan verdienen met links naar boekhoudprogramma\'s en een zakelijke rekening, en waarom dat de berekeningen niet beïnvloedt.', html: `
-<p class="lead">Op een paar pagina's staan links naar commerciële diensten. Die zijn duidelijk gemarkeerd met "Advertentie / affiliate".</p>
+    affiliate: { h1: 'Affiliate-disclosure 2026', title: 'Affiliate-disclosure 2026 | Belastingcalculator', desc: 'Hoe Belastingcalculator kan verdienen met het actieve bol.com-partnerprogramma en boekhoudlinks, zonder effect op de berekening.', html: `
+<p class="lead">Op elke calculatorpagina staat een vak met zoeklinks naar bol.com. Dat partnerprogramma is actief. Op de startpagina en de zzp-pagina staan daarnaast links naar boekhoudprogramma's en een zakelijke rekening. Alles is gemarkeerd als advertentie.</p>
 <h2>Wat is een affiliate-link?</h2>
-<p>Als je via zo'n link een account aanmaakt of een abonnement neemt, kunnen wij een vergoeding krijgen van die dienst. Jij betaalt daar niets extra voor.</p>
+<p>Als je via zo'n link iets koopt, een account aanmaakt of een abonnement neemt, kunnen wij een vergoeding krijgen. Jij betaalt daar niets extra voor.</p>
+<h2>bol.com-partnerprogramma</h2>
+<p>Belastingcalculator is partner van bol.com. Dit programma is actief. Onder de uitkomst van elke calculator staat een vak met twee of drie zoeklinks. De links passen bij die calculator, bijvoorbeeld een gids voor de belastingaangifte, een archiefdoos voor de bewaarplicht van 7 jaar, een kasboek of een rekenmachine.</p>
+<p>Koop je iets via zo'n link, dan kunnen we een commissie krijgen van bol.com. Jij betaalt niets extra. De links gaan naar een zoekpagina, niet naar één artikel. We hebben de artikelen niet getest, we tonen geen prijzen en we schrijven geen reviews. We noemen niets de beste.</p>
+<p>De commissie verandert de berekening niet. De bedragen komen uit de officiële bronnen op <a href="${url('methode')}">methode en bronnen</a>.</p>
+<p>Klik je op een bol.com-link, dan ga je via partner.bol.com naar bol.com. bol.com kan dan cookies plaatsen om de commissie toe te wijzen. Daarvoor geldt het privacybeleid van bol.com.</p>
 <h2>Welke diensten?</h2>
 <ul>${[...AFFILIATE.boekhouden, ...AFFILIATE.bank].map(a => `<li>${esc(a.name)}: ${esc(a.what.nl)}</li>`).join('')}</ul>
-<p>Sommige van deze links zijn affiliate-links, of kunnen dat worden. Als je via zo'n link een dienst afneemt, kunnen wij een commissie krijgen. Jij betaalt daar niets extra voor. Alle links hebben het kenmerk <code>rel="sponsored"</code>.</p>
+<p>Sommige van deze links zijn affiliate-links, of kunnen dat worden. Als je via zo'n link een dienst afneemt, kunnen wij een commissie krijgen. Jij betaalt daar niets extra voor. Alle links hebben het kenmerk <code>rel="sponsored"</code>. Dit staat los van het bol.com-partnerprogramma hierboven.</p>
 <h2>Onze regels</h2>
-<ul><li>De berekeningen zijn nooit afhankelijk van een affiliate-partij.</li><li>We zetten diensten op alfabetische volgorde. We noemen niets "de beste".</li><li>We schrijven geen reviews en tonen geen beoordelingen.</li><li>We tonen geen advertenties van advertentienetwerken.</li></ul>` },
+<ul><li>De berekeningen zijn nooit afhankelijk van een affiliate-partij.</li><li>We zetten diensten op alfabetische volgorde. We noemen niets "de beste".</li><li>We schrijven geen reviews en tonen geen beoordelingen.</li><li>We tonen geen advertenties van advertentienetwerken.</li><li>Bol.com-links zijn zoekpagina's, zodat ze niet verlopen als een artikel uit het assortiment gaat.</li></ul>` },
     over: { h1: 'Over Belastingcalculator (2026)', title: 'Over Belastingcalculator: belasting rekenen in 2026', desc: 'Belastingcalculator is een onafhankelijke, gratis site om je belasting voor 2026 te berekenen. Lees hoe we werken en hoe je contact opneemt.', html: `
 <p class="lead">${BRAND} is een gratis, onafhankelijke site om je belasting voor 2026 uit te rekenen. Zonder account, zonder cookies.</p>
 <h2>Waarom deze site?</h2>
@@ -332,7 +337,7 @@ ${src(KB.src)}
 <h2>Hoe we werken</h2>
 <ul><li>Elk cijfer komt van een officiële bron. Je vindt ze allemaal op <a href="${url('methode')}">methode en bronnen</a>.</li><li>We testen de rekenregels met de rekenvoorbeelden van de Belastingdienst.</li><li>De rekenregels en teksten zijn gemaakt met hulp van AI en daarna gecontroleerd tegen de bronnen.</li><li>We geven geen belastingadvies. Twijfel je? Vraag het aan de Belastingdienst of een belastingadviseur.</li></ul>
 <h2>Onafhankelijk</h2>
-<p>We zijn niet verbonden aan de Belastingdienst, Dienst Toeslagen of de Rijksoverheid. Op een paar pagina's staan gemarkeerde affiliate-links. Lees de <a href="${url('affiliate')}">affiliate-disclosure</a>.</p>
+<p>We zijn niet verbonden aan de Belastingdienst, Dienst Toeslagen of de Rijksoverheid. Op de calculatorpagina's staan gemarkeerde bol.com-links, en op een paar pagina's links naar boekhoudprogramma's. Lees de <a href="${url('affiliate')}">affiliate-disclosure</a>.</p>
 <h2>Contact</h2>
 <p>Zie je een fout of heb je een vraag? Maak een melding op <a href="${OFFICIAL.contact}" rel="noopener">GitHub</a>.</p>` },
   };
