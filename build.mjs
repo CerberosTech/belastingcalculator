@@ -418,7 +418,33 @@ ${alternates}
 <main id="main" tabindex="-1">${body}</main>
 ${footer(lang)}${ANALYTICS}</body></html>`;
 }
+// Sister sites, on every page, in that page's language. Plain links: no rel, no query, no extra copy.
+// The woningmarkt label is the name on that site (og:site_name / WebSite name "Woningmarkt NL");
+// the English page titles itself "Dutch housing market: house prices, map and mortgage".
+// https://cerberostech.github.io/deadorsupported/en/ is 404, so English uses the site root too.
+const SISTER_TOOLS = {
+  nl: {
+    heading: 'Meer gratis tools van CerberosTech',
+    links: [
+      ['https://cerberostech.github.io/stroomprijs/', 'Stroomprijs vandaag per uur'],
+      ['https://cerberostech.github.io/woningmarkt/', 'Woningmarkt NL'],
+      ['https://cerberostech.github.io/isde-checker/', 'ISDE-subsidie warmtepomp checker'],
+      ['https://cerberostech.github.io/deadorsupported/', 'DeadOrSupported: wanneer stopt de support van je apparaat'],
+    ],
+  },
+  en: {
+    heading: 'More free tools from CerberosTech',
+    links: [
+      ['https://cerberostech.github.io/stroomprijs/en/', 'Dutch electricity price today (hourly)'],
+      ['https://cerberostech.github.io/woningmarkt/en/', 'Dutch housing market: house prices, map and mortgage'],
+      ['https://cerberostech.github.io/isde-checker/en/', 'ISDE heat pump subsidy checker (NL)'],
+      ['https://cerberostech.github.io/deadorsupported/', 'DeadOrSupported: device support end dates'],
+    ],
+  },
+};
 const footer = lang => { const f = COPY[lang].ui.footer;
+  const { heading, links } = SISTER_TOOLS[lang];
+  const sisters = `<nav class="foot-sisters" aria-labelledby="sister-h">${fold(`<h2 id="sister-h">${esc(heading)}</h2>`, `<ul>${links.map(([href, label]) => `<li><a href="${esc(href)}">${esc(label)}</a></li>`).join('')}</ul>`, 'foot-fold')}</nav>`;
   return `<footer class="site-foot"><div class="wrap">
 <div class="foot-brand"><a class="brand" href="${url('home', lang)}">${LOGO}<span>${BRAND}</span></a><p>${esc(COPY[lang].home.h1)}. ${COPY[lang].ui.perks.join(' · ')}.</p></div>
 <div class="foot-cols">
@@ -426,6 +452,7 @@ const footer = lang => { const f = COPY[lang].ui.footer;
 <div>${fold(`<h2>${f.guides}</h2>`, `<ul>${guides[lang].slice(0, 8).map(g => `<li><a href="${guideUrl(g)}">${esc(g.title)}</a></li>`).join('')}<li><a href="${url('gidsen', lang)}">${f.allGuides}</a></li></ul>`, 'foot-fold')}</div>
 <div>${fold(`<h2>${f.site}</h2>`, `<ul><li><a href="${url('methode', lang)}">${f.method}</a></li><li><a href="${url('over', lang)}">${f.about}</a></li><li><a href="${url('privacy', lang)}">${f.privacy}</a></li><li><a href="${url('affiliate', lang)}">${f.affiliate}</a></li></ul>`, 'foot-fold')}</div>
 </div>
+${sisters}
 <p class="foot-note">${f.note}</p>
 </div></footer>`; };
 const crumbs = (lang, items) => `<nav class="crumbs wrap" aria-label="${esc(COPY[lang].ui.crumbs)}"><ol><li><a href="${url('home', lang)}">${BRAND}</a></li>${items.map(([label, h], i) => i === items.length - 1 ? `<li><span aria-current="page">${esc(label)}</span></li>` : `<li><a href="${h}">${esc(label)}</a></li>`).join('')}</ol></nav>`;

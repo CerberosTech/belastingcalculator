@@ -484,6 +484,15 @@ summary { cursor: pointer; font-weight: 650; min-height: 44px; display: flex; al
 .foot-cols ul { list-style: none; margin: 0; padding: 0; }
 .foot-cols a { display: inline-block; padding: .4rem 0; font-size: .95rem; }
 .foot-note { margin: 2rem 0 0; padding-top: 1.3rem; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .86rem; color: #A9B1C9; max-width: 48rem; }
+.foot-sisters { margin: 1.6rem 0 0; padding-top: 1.3rem; border-top: 1px solid rgba(255, 255, 255, .1); min-width: 0; }
+.foot-sisters ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0 1.6rem; }
+@media (min-width: 46em) { .foot-sisters ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.foot-sisters li { min-width: 0; }
+.foot-sisters a { display: inline-block; max-width: 100%; padding: .4rem 0; font-size: .95rem; overflow-wrap: anywhere; }
+@media (max-width: 47.5em) {
+  .foot-sisters { margin: 0; padding-top: 0; border-top: 0; }
+  .foot-sisters + .foot-note { border-top: 0; }
+}
 
 /* Checklists in guides ("- [ ] item") */
 .md ul.tasks { list-style: none; padding-left: 0; }
