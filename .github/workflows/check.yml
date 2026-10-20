@@ -1,0 +1,109 @@
+# Pull-request and main-branch check. Modelled on CerberosTech/deadorsupported
+# (.github/workflows/pr-check.yml, job name `check`): read-only checkout, Node 20
+# (same as .github/workflows/pages.yml), build, then a dist check.
+# This repo has no package.json. scripts/check.mjs is not run here: it launches
+# Chrome through scripts/chrome.mjs (--headless=new) and only looks for a browser
+# at a fixed list of paths. GitHub-hosted ubuntu-latest does not provide Chrome
+# or Chromium there. node --test test/ is the headless check that already runs
+# in the Pages workflow.
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: |
+          if [ -f package.json ]; then npm install
+          else echo "No package.json; the site has zero npm dependencies."
+          fi
+      - name: Test
+        run: node --test test/
+      - name: Build
+        run: node build.mjs
+      - name: Footer link count
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs';
+          import path from 'node:path';
+
+          const NL = [
+            ['https://cerberostech.github.io/stroomprijs/', 'Stroomprijs vandaag per uur'],
+            ['https://cerberostech.github.io/woningmarkt/', 'Woningmarkt NL'],
+            ['https://cerberostech.github.io/isde-checker/', 'ISDE-subsidie warmtepomp checker'],
+            ['https://cerberostech.github.io/deadorsupported/', 'DeadOrSupported: wanneer stopt de support van je apparaat'],
+          ];
+          const EN = [
+            ['https://cerberostech.github.io/stroomprijs/en/', 'Dutch electricity price today (hourly)'],
+            ['https://cerberostech.github.io/woningmarkt/en/', 'Dutch housing market: house prices, map and mortgage'],
+            ['https://cerberostech.github.io/isde-checker/en/', 'ISDE heat pump subsidy checker (NL)'],
+            ['https://cerberostech.github.io/deadorsupported/', 'DeadOrSupported: device support end dates'],
+          ];
+          const HEAD = {
+            nl: 'Meer gratis tools van CerberosTech',
+            en: 'More free tools from CerberosTech',
+          };
+          const count = (hay, needle) => hay.split(needle).length - 1;
+          const walk = (dir, acc = []) => {
+            for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+              const p = path.join(dir, ent.name);
+              if (ent.isDirectory()) walk(p, acc);
+              else acc.push(p);
+            }
+            return acc;
+          };
+
+          if (!fs.existsSync('dist')) {
+            console.error('dist/ is missing; run node build.mjs first');
+            process.exit(1);
+          }
+          const html = walk('dist').filter(file => file.endsWith('.html')).sort();
+          const problems = [];
+          let ok = 0;
+          const byLang = {};
+          for (const file of html) {
+            const text = fs.readFileSync(file, 'utf8');
+            const lang = (text.match(/<html lang="([^"]+)"/) || [])[1];
+            byLang[lang] = (byLang[lang] || 0) + 1;
+            if (lang !== 'nl' && lang !== 'en') {
+              problems.push(`${file}: unexpected lang ${lang || '(missing)'}`);
+              continue;
+            }
+            const links = lang === 'en' ? EN : NL;
+            const other = (lang === 'en' ? NL : EN).filter(([url]) => !links.some(([own]) => own === url));
+            const anchors = links.map(([url, label]) => count(text, `<a href="${url}">${label}</a>`));
+            const hrefs = links.map(([url]) => count(text, `href="${url}"`));
+            const headings = [...text.matchAll(new RegExp(`<h2 id="sister-h">${HEAD[lang]}[\\s\\S]*?</h2>`, 'g'))];
+            const heading = headings.length === 1 && headings[0][0].startsWith(`<h2 id="sister-h">${HEAD[lang]}`) ? 1 : headings.length;
+            const otherHrefs = other.map(([url]) => count(text, `href="${url}"`));
+            const badTags = [...text.matchAll(/<a\b[^>]*href="https:\/\/cerberostech\.github\.io\/(?:stroomprijs|woningmarkt|isde-checker|deadorsupported)[^"]*"[^>]*>/g)]
+              .map(match => match[0])
+              .filter(tag => /\srel=/.test(tag) || /[?&]/.test(tag) || tag !== `<a href="${(tag.match(/href="([^"]+)"/) || [])[1]}">`);
+            const good = anchors.every(n => n === 1) && hrefs.every(n => n === 1) && heading === 1 && otherHrefs.every(n => n === 0) && badTags.length === 0;
+            if (good) ok += 1;
+            else problems.push(`${file}: anchors=${anchors.join(',')} hrefs=${hrefs.join(',')} heading=${heading} other=${otherHrefs.join(',') || '-'} badTags=${badTags.length}`);
+          }
+
+          console.log(`html pages: ${html.length} (nl ${byLang.nl || 0}, en ${byLang.en || 0})`);
+          console.log(`pages with all 4 footer links exactly once: ${ok}`);
+          if (!html.length || ok !== html.length || problems.length) {
+            for (const problem of problems) console.error(problem);
+            process.exit(1);
+          }
+          EOF
