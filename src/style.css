@@ -453,6 +453,20 @@ summary { cursor: pointer; font-weight: 650; min-height: 44px; display: flex; al
 .aff-home .aff-list span { font-size: .82rem; }
 @media (min-width: 52em) { .aff-home .aff-list { grid-template-columns: repeat(4, 1fr); } }
 
+/* bol.com product box: under the calculator result, same colour system as the rest of the page. */
+.bol { margin: 1.35rem 0 .35rem; padding: 1.15rem 1.2rem 1rem; border: 1px solid var(--line); border-left: 3px solid var(--brand); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-1); min-width: 0; }
+.bol-kicker { margin: 0 0 .15rem; font-size: .72rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.bol h2 { margin: 0 0 .35rem; font-size: 1.2rem; }
+.bol-intro { margin: 0 0 .85rem; max-width: 42rem; color: var(--ink-2); font-size: .95rem; }
+.bol-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+@media (min-width: 40em) { .bol-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.bol-list a { display: flex; flex-direction: column; justify-content: center; gap: .2rem; min-height: 44px; height: 100%; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); text-decoration: none; color: var(--ink); overflow-wrap: anywhere; transition: border-color .15s; }
+.bol-list a:hover { border-color: var(--brand); }
+.bol-list strong { color: var(--brand-ink); font-weight: 720; letter-spacing: -0.01em; line-height: 1.3; }
+.bol-list span { color: var(--ink-2); font-size: .86rem; line-height: 1.45; }
+.bol-note { margin: .75rem 0 0; max-width: 46rem; font-size: .82rem; line-height: 1.45; color: var(--ink-3); }
+.bol-note a { font-weight: 650; }
+
 /* Info blocks (toeslagen) */
 .info h3 { display: flex; flex-wrap: wrap; gap: .4rem; align-items: baseline; }
 
@@ -551,7 +565,7 @@ summary { cursor: pointer; font-weight: 650; min-height: 44px; display: flex; al
   :root, html[data-theme="dark"] { --bg: #fff; --surface: #fff; --surface-2: #fff; --surface-3: #eee; --ink: #000; --ink-2: #222; --ink-3: #444; --line: #ccc; --net-ink: #000; --tax-ink: #000; color-scheme: light; }
   body { background: #fff; font-size: 11pt; }
   .fold-i, .fold-show > summary { display: none !important; }
-  .site-head, .site-foot, .calc-form, .r-actions, .aff, .others, .cmp, .skip, .peek, .hero-bg, .perks, .crumbs, .live-dot, .faq, .how, .eyebrow { display: none !important; }
+  .site-head, .site-foot, .calc-form, .r-actions, .aff, .bol, .others, .cmp, .skip, .peek, .hero-bg, .perks, .crumbs, .live-dot, .faq, .how, .eyebrow { display: none !important; }
   .hero { background: none; color: #000; padding: 0; }
   .hero h1, .hero .lead, .hero .updated, .hero .updated time { color: #000; }
   .calc-band { margin: 0; }

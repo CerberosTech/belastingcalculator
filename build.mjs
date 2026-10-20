@@ -57,6 +57,79 @@ const AFFILIATE = {
     { name: 'Knab', url: 'https://www.knab.nl/zakelijk', what: { nl: 'Zakelijke rekening voor zzp\'ers en ondernemers.', en: 'Business bank account for freelancers and business owners.' } },
   ],
 };
+// bol.com partner programme (site id 1550553), active. One box per calculator, under the result.
+// Search pages only, so a link does not die when one item leaves the catalogue. No prices, no reviews.
+// Click names are bol-<page>-<item> (GoatCounter). The bookkeeping card above stays on aff-<name>.
+const BOL_SITE = '1550553';
+const bolUrl = (query, name) => {
+  const search = 'https://www.bol.com/nl/nl/s/?searchtext=' + encodeURIComponent(query);
+  return `https://partner.bol.com/click/click?t=url&s=${BOL_SITE}&url=${encodeURIComponent(search)}&f=txl&name=${name}`;
+};
+const BOL = {
+  netto: {
+    heading: { nl: 'Naast je loonstrook', en: 'Next to your payslip' },
+    intro: { nl: 'Drie zoekpagina’s op bol.com die passen bij een loonstrook. We hebben de artikelen niet getest en tonen geen prijs.', en: 'Three search pages on bol.com, a Dutch shop, that sit next to a payslip. We have not tested the items and we show no prices.' },
+    items: [
+      { id: 'aangifte-boek', q: 'belastingaangifte boek', title: { nl: 'Gids belastingaangifte', en: 'Tax-return guide' }, text: { nl: 'Een boek dat de aangifte inkomstenbelasting stap voor stap uitlegt, met je jaaropgave ernaast.', en: 'A book that explains the Dutch income-tax return, to use beside your annual statement (jaaropgave).' } },
+      { id: 'ordner', q: 'ordner a4', title: { nl: 'Ordner voor loonstroken', en: 'Binder for payslips' }, text: { nl: 'Een A4-ordner voor loonstroken, de jaaropgave en je arbeidsovereenkomst.', en: 'An A4 ring binder for payslips, your annual statement and your employment contract.' } },
+      { id: 'huishoudboekje', q: 'huishoudboekje', title: { nl: 'Huishoudboekje', en: 'Household ledger' }, text: { nl: 'Een papieren overzicht voor vaste lasten en wat je van je netto overhoudt.', en: 'A paper ledger for regular bills and what is left of your net pay.' } },
+    ],
+  },
+  ib: {
+    heading: { nl: 'Papieren bij je aangifte', en: 'Papers for your tax return' },
+    intro: { nl: 'Zoekpagina’s op bol.com voor de aangifte inkomstenbelasting. Geen test, geen prijs, geen oordeel.', en: 'Search pages on bol.com, a Dutch shop, for the income-tax return. No test, no price and no verdict.' },
+    items: [
+      { id: 'almanak', q: 'belastingalmanak', title: { nl: 'Belastingalmanak', en: 'Tax almanac' }, text: { nl: 'Een naslagwerk met tarieven, heffingskortingen en aftrekposten voor het belastingjaar.', en: 'A reference book of rates, tax credits and deductions for the tax year.' } },
+      { id: 'sorteermap', q: 'sorteermap a4', title: { nl: 'Sorteermap', en: 'Sorting file' }, text: { nl: 'Een map met tabbladen voor de jaaropgave, aftrekposten en bewijsstukken.', en: 'A tabbed file for your annual statement, deductions and supporting papers.' } },
+      { id: 'archiefdoos', q: 'archiefdoos', title: { nl: 'Archiefdoos', en: 'Archive box' }, text: { nl: 'Een stevige doos om de aangifte en de bijlagen thuis te bewaren.', en: 'A sturdy box to keep the return and the attachments at home.' } },
+    ],
+  },
+  zzp: {
+    heading: { nl: 'Voor de administratie', en: 'For your records' },
+    intro: { nl: 'Zoekpagina’s op bol.com, naast je boekhoudprogramma. Handig voor de papieren administratie en de bewaarplicht van 7 jaar.', en: 'Search pages on bol.com, a Dutch shop, next to bookkeeping software. Useful for paper records and the 7-year retention duty.' },
+    items: [
+      { id: 'kasboek', q: 'kasboek inkomsten uitgaven', title: { nl: 'Kasboek', en: 'Bookkeeping ledger' }, text: { nl: 'Een papieren boek voor inkomsten en uitgaven, als aanvulling op je software.', en: 'A paper book for income and expenses, alongside your software.' } },
+      { id: 'rekenmachine', q: 'bureaurekenmachine', title: { nl: 'Bureaurekenmachine', en: 'Desktop calculator' }, text: { nl: 'Een rekenmachine op je bureau om bedragen en btw na te tellen.', en: 'A calculator for your desk, to recheck amounts and VAT.' } },
+      { id: 'archiefdoos', q: 'archiefdoos', title: { nl: 'Archiefdoos', en: 'Archive box' }, text: { nl: 'Een archiefdoos voor facturen en bonnen. De bewaarplicht voor de administratie is 7 jaar.', en: 'An archive box for invoices and receipts. Businesses in the Netherlands keep records for 7 years.' } },
+    ],
+  },
+  box3: {
+    heading: { nl: 'Bij je vermogen in box 3', en: 'With your box 3 assets' },
+    intro: { nl: 'Zoekpagina’s op bol.com rond sparen en beleggen. Ze vervangen geen aangifte en we tonen geen prijs.', en: 'Search pages on bol.com, a Dutch shop, about saving and investing. They do not file a return, and we show no prices.' },
+    items: [
+      { id: 'beleggen', q: 'beleggen voor beginners', title: { nl: 'Boek over beleggen', en: 'Investing book' }, text: { nl: 'Een inleidend boek over beleggen. Het vult je box 3-aangifte niet in.', en: 'An introductory book on investing. It does not complete your box 3 return.' } },
+      { id: 'rekenmachine', q: 'financiele rekenmachine', title: { nl: 'Financiële rekenmachine', en: 'Financial calculator' }, text: { nl: 'Een rekenmachine met procenten, voor rente en rendement.', en: 'A calculator with percentages, for interest and return.' } },
+      { id: 'jaaroverzicht', q: 'ordner a4', title: { nl: 'Ordner voor jaaroverzichten', en: 'Binder for annual statements' }, text: { nl: 'Een ordner voor de jaaroverzichten van je bank en je broker.', en: 'A ring binder for the annual statements from your bank and your broker.' } },
+    ],
+  },
+  vakantiegeld: {
+    heading: { nl: 'Je vakantiegeld indelen', en: 'Planning your holiday allowance' },
+    intro: { nl: 'Zoekpagina’s op bol.com om het bedrag te plannen. Geen reisaanbiedingen en geen prijzen.', en: 'Search pages on bol.com, a Dutch shop, to plan the amount. No holiday deals and no prices.' },
+    items: [
+      { id: 'huishoudboekje', q: 'huishoudboekje', title: { nl: 'Huishoudboekje', en: 'Household ledger' }, text: { nl: 'Een boekje om het vakantiegeld te verdelen over rekeningen en sparen.', en: 'A booklet to split holiday allowance across bills and savings.' } },
+      { id: 'budgetplanner', q: 'budgetplanner', title: { nl: 'Budgetplanner', en: 'Budget planner' }, text: { nl: 'Een planner om een eenmalig bedrag over de maanden te spreiden.', en: 'A planner to spread a one-off amount across the months.' } },
+      { id: 'insteekmap', q: 'insteekmap a4', title: { nl: 'Insteekmap voor loonstroken', en: 'Pocket file for payslips' }, text: { nl: 'Een insteekmap voor de stroken waarop je vakantiegeld staat.', en: 'A pocket file for the slips that show your holiday allowance.' } },
+    ],
+  },
+  expat: {
+    heading: { nl: 'Papieren bij de 30%-regeling', en: 'Papers for the 30% ruling' },
+    intro: { nl: 'Zoekpagina’s op bol.com rond de aanvraag en de papieren die je bewaart. We hebben ze niet getest.', en: 'Search pages on bol.com, a Dutch shop, for people who apply for the ruling or already use it. We have not tested the items.' },
+    items: [
+      { id: 'boek', q: 'werken en wonen in nederland', title: { nl: 'Boek over werken in Nederland', en: 'Book on working in the Netherlands' }, text: { nl: 'Boeken over wonen en werken in Nederland, voor wie de regeling aanvraagt.', en: 'Books about living and working in the Netherlands, for people applying for the ruling.' } },
+      { id: 'documentenmap', q: 'documentenmap a4', title: { nl: 'Documentenmap', en: 'Document folder' }, text: { nl: 'Een map voor de beschikking, je contract en de loonstroken.', en: 'A folder for the decision, your contract and your payslips.' } },
+      { id: 'woordenboek', q: 'woordenboek nederlands engels', title: { nl: 'Woordenboek Nederlands-Engels', en: 'Dutch–English dictionary' }, text: { nl: 'Een woordenboek voor brieven van de Belastingdienst.', en: 'A dictionary for letters from the Belastingdienst.' } },
+    ],
+  },
+  zorgtoeslag: {
+    heading: { nl: 'Bij je zorgtoeslag', en: 'With your healthcare allowance' },
+    intro: { nl: 'Zoekpagina’s op bol.com rond de aanvraag. We berekenen de toeslag zelf; dit zijn geen verzekeringen.', en: 'Search pages on bol.com, a Dutch shop, around the application. The calculator works out the allowance; these are not insurance policies.' },
+    items: [
+      { id: 'geldwijzer', q: 'nibud geldwijzer', title: { nl: 'Nibud Geldwijzer', en: 'Nibud money guide' }, text: { nl: 'Een gids van het Nibud over toeslagen, verzekeringen en andere regelingen.', en: 'A Nibud guide to Dutch benefits, insurance and other schemes.' } },
+      { id: 'insteekmap', q: 'insteekmap a4', title: { nl: 'Insteekmap', en: 'Pocket file' }, text: { nl: 'Een map voor je inkomensgegevens en de toekenningsbeschikking.', en: 'A file for your income figures and the award letter.' } },
+      { id: 'rekenmachine', q: 'bureaurekenmachine', title: { nl: 'Bureaurekenmachine', en: 'Desktop calculator' }, text: { nl: 'Een rekenmachine om toetsingsinkomen en premie na te rekenen.', en: 'A calculator to recheck the income used for the allowance and the premium.' } },
+    ],
+  },
+};
 const OFFICIAL = {
   proef: 'https://www.belastingdienst.nl/wps/wcm/connect/nl/toeslagen/content/hulpmiddel-proefberekening-toeslagen',
   contact: 'https://github.com/cerberostech/belastingcalculator/issues',
@@ -117,6 +190,17 @@ COPY.en = copyEn(ctx('en'));
   const miss = [...a.filter(k => !b.has(k)).map(k => `en lacks ${k}`), ...[...b].filter(k => !a.includes(k)).map(k => `nl lacks ${k}`)];
   if (miss.length) throw new Error(`copy files differ:\n${miss.join('\n')}`);
   for (const lang of LANGS) for (const c of COPY[lang].calcs) if (!COPY[lang].faq[c.key] || !COPY[lang].how[c.key] || !ROUTES[c.key]) throw new Error(`copy-${lang}: calculator "${c.key}" needs a route, faq and how`);
+  for (const c of COPY.nl.calcs) {
+    const box = BOL[c.key];
+    if (!box?.heading?.nl || !box.heading.en || !box.intro?.nl || !box.intro.en) throw new Error(`BOL: calculator "${c.key}" needs a heading and intro in nl and en`);
+    if (!Array.isArray(box.items) || box.items.length < 2 || box.items.length > 3) throw new Error(`BOL.${c.key}: need 2 or 3 items`);
+    const ids = new Set();
+    for (const item of box.items) {
+      if (!/^[a-z0-9-]+$/.test(item.id) || ids.has(item.id)) throw new Error(`BOL.${c.key}: bad or duplicate id "${item.id}"`);
+      ids.add(item.id);
+      if (!item.q?.trim() || !item.title?.nl || !item.title.en || !item.text?.nl || !item.text.en) throw new Error(`BOL.${c.key}.${item.id}: incomplete`);
+    }
+  }
   for (const lang of LANGS) for (const id of Object.keys(S)) if (!COPY[lang].sourceNames[id]) console.warn(`sources: no ${lang} name for "${id}"`); }
 const updatedLine = (lang, iso = UPDATED) => `<p class="updated">${COPY[lang].ui.updated}: <time datetime="${iso}">${esc(longDate(iso, lang))}</time></p>`;
 
@@ -361,6 +445,20 @@ function affiliateBlock(lang, id = 'aff', { home = false } = {}) {
 <h3>${A.software}</h3><ul class="aff-list">${AFFILIATE.boekhouden.map(item).join('')}</ul>
 <h3>${A.bank}</h3><ul class="aff-list">${AFFILIATE.bank.map(item).join('')}</ul></aside>`;
 }
+// Product box under the calculator result. Same searches on the English page; the copy says bol.com is a Dutch shop.
+function bolBox(lang, key) {
+  const box = BOL[key];
+  const note = lang === 'nl'
+    ? `Advertentie: via deze links ontvangen we mogelijk een commissie van bol, zonder extra kosten voor jou. <a href="${url('affiliate', lang)}">Affiliate-disclosure</a>.`
+    : `Sponsored: we may earn a commission from bol if you use these links, at no extra cost to you. <a href="${url('affiliate', lang)}">Affiliate disclosure</a>. bol.com is a Dutch shop.`;
+  const items = box.items.map(item => {
+    const slugName = `${key}-${item.id}`;
+    const title = item.title[lang];
+    const fresh = lang === 'nl' ? 'opent in een nieuw venster' : 'opens in a new tab';
+    return `<li><a href="${esc(bolUrl(item.q, slugName))}" rel="sponsored nofollow noopener" target="_blank"${lang === 'en' ? ' hreflang="nl"' : ''} data-goatcounter-click="bol-${slugName}" data-goatcounter-title="${esc(`Bol.com: ${title}`)}"><strong>${esc(title)}</strong><span>${esc(item.text[lang])}</span><span class="vh"> (${fresh})</span></a></li>`;
+  }).join('');
+  return `<aside class="bol" aria-labelledby="bol-${key}-h"><p class="bol-kicker">bol.com</p><h2 id="bol-${key}-h">${esc(box.heading[lang])}</h2><p class="bol-intro">${esc(box.intro[lang])}</p><ul class="bol-list">${items}</ul><p class="bol-note">${note}</p></aside>`;
+}
 
 // One calculator: form + result (default example rendered here, JS takes over in the browser), then the compare section.
 function calcWidget(lang, calcId, { prefix = calcId } = {}) {
@@ -404,7 +502,7 @@ function calcPage(lang, c, extra = '') {
     faqLd(faq), breadcrumbLd(lang, [[c.h1, abs(rel)]]), PUBLISHER] };
   const body = `<div class="hero hero-calc-page"><div class="hero-bg" aria-hidden="true"></div>${crumbs(lang, [[c.h1, url(c.key, lang)]])}
 <div class="intro wrap"><span class="eyebrow">${icon(c.key)}${esc(c.name)}</span><h1>${esc(c.h1)}</h1><p class="lead">${esc(c.lead)}</p>${updatedLine(lang)}${perks(lang)}</div></div>
-<div class="calc-band"><div class="wrap">${calcWidget(lang, c.calc)}</div></div>
+<div class="calc-band"><div class="wrap">${calcWidget(lang, c.calc)}${bolBox(lang, c.key)}</div></div>
 <div class="wrap content">
 ${disclaimer(lang)}
 ${extra}

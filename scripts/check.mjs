@@ -87,14 +87,14 @@ for (const [rel, h] of Object.entries(html)) {
   if (!h.trimEnd().endsWith(`${GC_TAG}</body></html>`)) problems.push(`${where}: does not end with the GoatCounter tag`);
   if (h.split(GC_TAG).length !== 2) problems.push(`${where}: GoatCounter tag not exactly once`);
   if (!h.includes(`${GC_SETTINGS}\n${GC_TAG}`)) problems.push(`${where}: no GoatCounter no_onload setting before the tag`);
-  // Sponsored links: aff-<name>; newsletter links: newsletter-<name>. Both need a title for the GoatCounter dashboard.
+  // Sponsored links: aff-<name> (bookkeeping card) or bol-<page>-<item> (bol.com box); newsletter links: newsletter-<name>. Both need a title.
   // Source links (data/sources.json, such as the Belastingdienst "Nieuwsbrief Loonheffingen") are not newsletter sign-ups.
   for (const [a, tag, text] of h.matchAll(/(<a\b[^>]*>)([\s\S]*?)<\/a>/g)) {
     const sponsored = /\bsponsored\b/.test(attr(tag, 'rel') || ''), newsletter = /newsletter|nieuwsbrief/i.test(tag + text) && !SOURCES.has(unesc(attr(tag, 'href') || ''));
     if (!sponsored && !newsletter) continue;
     const click = attr(tag, 'data-goatcounter-click'), title = attr(tag, 'data-goatcounter-title'), label = (attr(tag, 'href') || a).slice(0, 60);
     if (!click) { problems.push(`${where}: ${sponsored ? 'sponsored' : 'newsletter'} link without data-goatcounter-click (${label})`); continue; }
-    if (sponsored && !/^aff-[a-z0-9-]+$/.test(click)) problems.push(`${where}: sponsored link click name "${click}" is not aff-<name>`);
+    if (sponsored && !/^(?:aff|bol)-[a-z0-9-]+$/.test(click)) problems.push(`${where}: sponsored link click name "${click}" is not aff-<name> or bol-<page>-<item>`);
     if (newsletter && !sponsored && !/^newsletter-[a-z0-9-]+$/.test(click)) problems.push(`${where}: newsletter link click name "${click}" is not newsletter-<name>`);
     if (!title) problems.push(`${where}: link ${click} has no data-goatcounter-title`);
   }
@@ -204,7 +204,7 @@ try {
       await tab.eval(`document.querySelectorAll('details[data-fold]').forEach(d => d.open = true)`);
       const overflow = await tab.eval('document.documentElement.scrollWidth - window.innerWidth');
       if (overflow > 0) problems.push(`${w}px ${p}: horizontal overflow ${overflow}px`);
-      const small = await tab.eval(`[...document.querySelectorAll('main a, main button, main input, main select, .site-nav a, .lang a${mobile ? ', main summary, .site-foot summary' : ''}')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height && e.offsetParent && !e.closest('p, li:not(.calc-index li):not(.aff-list li), td, th, .help, .r-sub, .rnote') && (r.height < 44 || (e.closest('.lang') && r.width < 44)) && e.type !== 'radio' && e.type !== 'checkbox'; }).map(e => (e.id || e.textContent.trim().slice(0, 30)) + ':' + Math.round(e.getBoundingClientRect().height))`);
+      const small = await tab.eval(`[...document.querySelectorAll('main a, main button, main input, main select, .site-nav a, .lang a${mobile ? ', main summary, .site-foot summary' : ''}')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height && e.offsetParent && !e.closest('p, li:not(.calc-index li):not(.aff-list li):not(.bol-list li), td, th, .help, .r-sub, .rnote') && (r.height < 44 || (e.closest('.lang') && r.width < 44)) && e.type !== 'radio' && e.type !== 'checkbox'; }).map(e => (e.id || e.textContent.trim().slice(0, 30)) + ':' + Math.round(e.getBoundingClientRect().height))`);
       if (small.length) problems.push(`${w}px ${p}: small tap targets ${small.join(', ')}`);
       if (!(await tab.eval(`(() => { const a = document.querySelector('a[data-lang-switch]'); if (!a) return false; const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(a).visibility !== 'hidden'; })()`))) problems.push(`${w}px ${p}: language switcher not visible`);
       if (langOf(p) === 'en' && p !== '404.html' && w === 1280) dutchLeft(p, await tab.eval(visibleEnglishText));
@@ -285,7 +285,7 @@ try {
     await tab.goto(ROOT + T.zzp + '?winst=61234&uren=1&starter=1&loon=0&aow=0&bruto=0');
     await waitFor(() => tab.gc.length > 0);
     tab.gc.length = 0;
-    const clicked = await tab.eval(`(() => { const a = document.querySelector('a[rel~="sponsored"]'); if (!a) return null; addEventListener('click', e => e.preventDefault(), { once: true }); a.click(); return a.dataset.goatcounterClick; })()`);
+    const clicked = await tab.eval(`(() => { const a = document.querySelector('.aff a[rel~="sponsored"]'); if (!a) return null; addEventListener('click', e => e.preventDefault(), { once: true }); a.click(); return a.dataset.goatcounterClick; })()`);
     if (!clicked) problems.push(`${lang} zzp: no sponsored link to click`);
     else {
       await waitFor(() => tab.gc.some(x => x.e));

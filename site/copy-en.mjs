@@ -314,18 +314,23 @@ ${src(KB.src)}
 <h2>Hosting</h2>
 <p>The site runs on GitHub Pages. GitHub processes technical data, such as your IP address, to deliver and protect the pages. Read the <a href="${OFFICIAL.ghPrivacy}" rel="noopener">GitHub privacy statement</a>.</p>
 <h2>Links to other sites</h2>
-<p>We link to the Belastingdienst, the Dutch government (Rijksoverheid) and a few commercial services. If you click such a link, the privacy policy of that site applies. See also the <a href="${url('affiliate')}">affiliate disclosure</a>.</p>
+<p>We link to the Belastingdienst, the Dutch government (Rijksoverheid), bol.com and a few other commercial services. If you click such a link, the privacy policy of that site applies. A bol.com link goes via partner.bol.com; bol.com may then set cookies to assign a commission. See the <a href="${url('affiliate')}">affiliate disclosure</a>.</p>
 <h2>Questions</h2>
 <p>Do you have a question about privacy? Open an issue on <a href="${OFFICIAL.contact}" rel="noopener">GitHub</a>.</p>` },
-    affiliate: { h1: 'Affiliate disclosure 2026', title: 'Affiliate disclosure 2026 | Belastingcalculator', desc: 'How Belastingcalculator may earn money from links to bookkeeping software and a business bank account, and why that does not affect the calculations.', html: `
-<p class="lead">A few pages have links to commercial services. They are clearly marked "Advertisement / affiliate".</p>
+    affiliate: { h1: 'Affiliate disclosure 2026', title: 'Affiliate disclosure 2026 | Belastingcalculator', desc: 'How Belastingcalculator may earn from the active bol.com partner programme and bookkeeping links, without affecting calculations.', html: `
+<p class="lead">Every calculator page has a box with search links to bol.com. That partner programme is active. The home page and the freelancer page also link to bookkeeping software and a business bank account. Each placement is marked as sponsored.</p>
 <h2>What is an affiliate link?</h2>
-<p>If you open an account or take out a subscription through such a link, the service may pay us a fee. You pay nothing extra.</p>
+<p>If you buy something, open an account or take out a subscription through such a link, we may receive a fee. You pay nothing extra.</p>
+<h2>bol.com partner programme</h2>
+<p>Belastingcalculator is a partner of bol.com. This programme is active. Under the result of every calculator there is a box with two or three search links. The links match that calculator: a guide to the Dutch tax return, an archive box for the seven-year record-keeping duty, a bookkeeping ledger or a calculator, for example. bol.com is a Dutch shop.</p>
+<p>If you buy something through such a link, we may receive a commission from bol.com. You pay nothing extra. The links open a search page, not one item. We have not tested the items, we show no prices and we write no reviews. We never call anything the best.</p>
+<p>The commission does not change the calculation. The amounts come from the official sources on <a href="${url('methode')}">methodology and sources</a>.</p>
+<p>If you click a bol.com link, you go to bol.com via partner.bol.com. bol.com may then set cookies to assign the commission. The bol.com privacy policy applies to that.</p>
 <h2>Which services?</h2>
 <ul>${[...AFFILIATE.boekhouden, ...AFFILIATE.bank].map(a => `<li>${esc(a.name)}: ${esc(a.what.en)}</li>`).join('')}</ul>
-<p>Some of these links are affiliate links, or may become affiliate links. If you sign up through such a link, we may earn a commission. You pay nothing extra. All of them carry the attribute <code>rel="sponsored"</code>.</p>
+<p>Some of these links are affiliate links, or may become affiliate links. If you sign up through such a link, we may earn a commission. You pay nothing extra. All of them carry the attribute <code>rel="sponsored"</code>. This is separate from the bol.com partner programme above.</p>
 <h2>Our rules</h2>
-<ul><li>The calculations never depend on an affiliate partner.</li><li>We list services in alphabetical order. We never call anything "the best".</li><li>We write no reviews and show no ratings.</li><li>We show no ads from ad networks.</li></ul>` },
+<ul><li>The calculations never depend on an affiliate partner.</li><li>We list services in alphabetical order. We never call anything "the best".</li><li>We write no reviews and show no ratings.</li><li>We show no ads from ad networks.</li><li>bol.com links are search pages, so they do not go stale when one item leaves the catalogue.</li></ul>` },
     over: { h1: 'About Belastingcalculator (2026)', title: 'About Belastingcalculator: Dutch tax for 2026', desc: 'Belastingcalculator is an independent, free site to calculate your Dutch tax for 2026, in Dutch and English. Read how we work and how to contact us.', html: `
 <p class="lead">${BRAND} is a free, independent site to calculate your Dutch tax for 2026. No account, no cookies.</p>
 <h2>Why this site?</h2>
@@ -335,7 +340,7 @@ ${src(KB.src)}
 <h2>How we work</h2>
 <ul><li>Every figure comes from an official source. You find them all on <a href="${url('methode')}">methodology and sources</a>.</li><li>We test the rules with the worked examples of the Belastingdienst.</li><li>The rules and texts were made with the help of AI and then checked against the sources.</li><li>We do not give tax advice. Not sure? Ask the Belastingdienst or a tax adviser.</li></ul>
 <h2>Independent</h2>
-<p>We are not connected to the Belastingdienst, Dienst Toeslagen or the Dutch government. A few pages have marked affiliate links. Read the <a href="${url('affiliate')}">affiliate disclosure</a>.</p>
+<p>We are not connected to the Belastingdienst, Dienst Toeslagen or the Dutch government. Calculator pages have marked bol.com links, and a few pages link to bookkeeping software. Read the <a href="${url('affiliate')}">affiliate disclosure</a>.</p>
 <h2>Contact</h2>
 <p>Found a mistake or have a question? Open an issue on <a href="${OFFICIAL.contact}" rel="noopener">GitHub</a>.</p>` },
   };
